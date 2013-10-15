@@ -1,0 +1,29 @@
+a:2:{s:4:"name";s:17:"Replicatie filter";s:4:"code";s:755:"if (!function_exists ("TERRA_ReplicateFile")) { // prevent multiple definitions
+
+function TERRA_ReplicateFilePrecheck ()
+{
+  return '';
+  // input: $file, $supergroup, $objectid
+  return 'if ($objectid=="c47456bb93990742ac2eb8964a1a9fc1") $ok = true; else $ok = false;';
+  // output: $ok
+}
+
+function TERRA_ReplicateObjectPrecheck ()
+{
+  return '';
+  // input: $table, $key
+  return 'if ($key=="c47456bb93990742ac2eb8964a1a9fc1") $ok = true; else $ok = false;';
+  // output: $ok
+}
+
+function TERRA_ReplicateFile ($toserver, $fromserver, $file, $supergroup, $objectid)
+{
+  return true;
+}
+
+function TERRA_ReplicateObject ($toserver, $fromserver, $table, $key)
+{
+  return true;
+}
+
+} // if (!function_exists ("SHIELD_ReplicateFile"))";}

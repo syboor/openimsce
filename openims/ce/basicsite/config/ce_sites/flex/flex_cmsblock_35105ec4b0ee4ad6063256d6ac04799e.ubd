@@ -1,0 +1,9 @@
+a:3:{s:4:"name";s:13:"[[[coolbar]]]";s:3:"tag";s:7:"coolbar";s:12:"code_content";s:1123:"/* This component is not necessary. OpenIMS will substitute the [[[coolbar]]] tag anyway.
+ * If a "coolbar" component exists, it MUST call IMS_Coolbar, and it MAY add additional output.
+ */
+if (IMS_Preview()) {
+  $content = '<div id="coolbar" style="opacity:0.9;filter: alpha(opacity = 90);position: fixed; left:0px; top: 0px; z-index: 99; background-color: #fff;height:80px;overflow:hidden;border-bottom:1px solid black;border-right:1px solid black;white-space:nowrap;">'.IMS_Coolbar().'</div>';
+  $content .= '<div id="coolbartoggle" onclick="var co = document.getElementById(\'coolbar\'); var cot = document.getElementById(\'coolbartoggle\'); if (co.style.display == \'none\') { co.style.display=\'block\'; cot.innerHTML = \''. DHTML_EncodeJsString('&lt;&lt;&lt;').'\'; } else {co.style.display=\'none\'; cot.innerHTML = \''. DHTML_EncodeJsString('&gt;&gt;&gt;') .'\';}" style="position: fixed; text-align: center; padding: 2px; width: 50px; left:20px; top: 70px; z-index: 100; background-color: #ddd; border: 1px solid #333; font-family: Arial; font-size: 13px;">&lt;&lt;&lt;</div>';
+} else {
+  $content = "";
+}";}

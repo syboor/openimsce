@@ -1,0 +1,133 @@
+These installation instructions are for OpenIMS CE (Community Edition) only. 
+Additional and different requirements apply to OpenIMS Enterprise Edition.
+
+If you have any questions or need help please visit our forum at
+http://www.openims.com/phpbb/ so we can help you.
+
+REQUIRED SOFTWARE
+* Apache 1.3, 2.0 or 2.2
+* PHP 4 or 5 (max 5.4)
+* zip, unzip, gzip, gunzip, diff utilities
+
+CONFIGURATION REQUIREMENTS
+* OpenIMS must be installed in the DocumentRoot. OpenIMS will not work when 
+  installed in a subdirectory under the DocumentRoot.
+* OpenIMS must have full write access to the DocumentRoot. Ownership (by the 
+  user that Apache runs as) is recommended.
+* OpenIMS must be allowed to use the command line utilities listed above and 
+  to use the shell. 
+  SELinux or other software that would interfere with this, should be disabled
+  (at least for Apache).
+* mod_php is recommended. When not using mod_php, the PHP settings listed in 
+  the included .htaccess file should be transferred to php.ini.
+* The Apache directive "AllowOverride All" is required.
+
+QUICK INSTALL INSTRUCTIONS
+1 Unzip OpenIMS in the DocumentRoot. If you are not unzipping, but copying or
+  moving files, make certain that .htaccess is included.
+2 Use "chown" to transfer ownership to the Apache user. Example:
+  chown -R apache:apache /srv/www/openims
+3 Access the server with a web browser (using the correct domain name if 
+  VirtualHosts are being used).
+4 You should be redirected to http://<<<hostname>>>/openims/ce/autoconf/ and 
+  receive an error page instruction you to add your IP-adres to
+  <<<DocumentRoot>>>/openims/ce/autoconf/.htaccess. Do this.
+5 Refresh the page in your web browser. You should now be able to create
+  a basic site and set a password.
+6 After creating the site, remove your IP-adress from 
+  <<<DocumentRoot>>>/openims/ce/autoconf/.htaccess.
+7 Visit the url http://<<<hostname>>>/adm to log in to OpenIMS.
+8 Use Admin > Maintenance to check and/or repair your Myconfig.php 
+  configuration.
+
+MYCONFIG CONFIGURATION SETTINGS
+Myconfig.php should appear in the DocumentRoot after step 5 of the Quick
+Install Instructions. You should change the settings in myconfig.php to match
+your Linux configuration.
+
+*** Default settings created during the installation:
+
+$myconfig["windows"] = "no";
+// Dont change this
+
+$myconfig["linux"] = "yes";
+// Dont change this
+
+$myconfig["tmp"] = "/tmp/";
+// This should be a directory where Apache has write access
+
+$myconfig["hasgzlib"] = "yes";
+// Tells OpenIMS whether certain PHP functions are available.
+// If the selftest (Admin > Maintenaince > Check configuration) results in
+// a (fatal) error, change this setting to "no".
+
+$myconfig["hasgzcompress"] = "yes"; 
+// Tells OpenIMS whether certain PHP functions are available.
+// If the selftest (Admin > Maintenaince > Check configuration) results in
+// a (fatal) error, change this setting to "no".
+
+$myconfig["gzipcommand"] = "/bin/gzip";
+// Should contain the path to the gzip executable.
+
+$myconfig["gunzipcommand"] = "/bin/gunzip"; 
+// Should contain the path to the gunzip executable.
+
+$myconfig["tarcommand"] = "/bin/tar"; 
+// Should contain the path to the tar executable.
+
+$myconfig["localsendmail"] = "yes";
+// Tell OpenIMS to use the standard PHP mail() function. Don't change this,
+// as there are no alternatives available in OpenIMS CE.
+
+$myconfig["diff"] = "/usr/bin/diff"; 
+// Should contain the path to the diff executable.
+
+$myconfig["unzip"] = "/usr/bin/unzip"; 
+// Should contain the path to the unzip executable.
+
+$myconfig["zip"] = "/usr/bin/zip"; 
+// Should contain the path to the zip executable.
+
+*** Optional settings that you might want to add
+
+$myconfig["nosendmail"] = "yes";
+// Disable alle mail functionality.
+
+$myconfig["defaultlanguage"] = "en";
+$myconfig["defaultlanguage"] = "nl";
+// Configure the default language (English or Dutch).
+
+$myconfig["antiword"] = "/usr/bin/antiword"; // (see below)
+
+INSTALLING ANTIWORD (OPTIONAL)
+Antiword is required to compare historical versions of .doc documents. Without
+Antiword, the compare buttons will not be available. Using antiword will also
+improve the quality of full text searching.
+
+1 Install antiword. Example: yum install antiword.
+2 Use "which antiword" to find out where antiword is installed, and add the
+  result to myconfig.php. Example: $myconfig["antiword"] = "/usr/bin/antiword"; 
+3 Make certain that the Apache user has permission to run antiword. 
+  Example: chmod 755 /usr/bin/antiword
+4 Use Admin > Maintenance to check and/or repair your Myconfig.php 
+  configuration.
+5 To benefit from improved searching, use Admin > Maintenance to regenerate
+  the full text indexes.
+
+TROUBLESHOOTING TIPS
+* If images and short url's (a short url would be http://<<<hostname>>>/adm 
+  instead of the full url http://<<<hostname>>>/openims/openims.php?mode=admin)
+  are not working, this usually means that .htaccess is not present / has a 
+  syntax error / is not being read by apache; check your AllowOverride-settings
+  is httpd.conf.
+* To view OpenIMS errors (including many errors related to the configuration 
+  of php), go to http://<<<hostname>>>/showerrors, enable the "Show Errors"
+  option, and then reload (Ctrl+F5) the page you were trying to view.
+* If (with /showerrors) you get the php error "headers already sent", check 
+  that you do not have any whitespace before <? or after ?> in myconfig.php 
+  or in your site configuration.
+* Go the the OpenIMS-directory and do "php -f myconfig.php" on the command 
+  line, to verify that there are no syntax errors in myconfig.php.
+
+If you have any questions or need help please visit our forum at
+http://www.openims.com/phpbb/ so we can help you.

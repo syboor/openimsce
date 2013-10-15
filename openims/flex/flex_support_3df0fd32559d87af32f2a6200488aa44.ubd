@@ -1,0 +1,47 @@
+a:2:{s:4:"name";s:17:"Xss Filter Policy";s:4:"code";s:2477:"/********************************************************* 
+   This function does not enable or disable XSS filtering.
+   Use 
+     $myconfig[$sgn]["xssfilter"] = "yes"; 
+   to enable filtering.
+  
+   Use 
+     $myconfig[$sgn]["xssfilter"] = "warn"; 
+   to test the filter. This setting will log to the "xssfilter" log,
+   but will not block anything.
+
+   *** XSS filtering is a quick way to secure legacy code, and a        ***
+   *** useful "backup" solution. You should always aim for appriopriate ***
+   *** output escaping in all code. XSS filtering should not be used    ***
+   *** as a replacement for output escaping.                            ***
+   
+   The function IMS_XssPolicy_Extra below can be used to fine tune the 
+   XSS Filter Policy. It can be used to make certain (carefully reviewed)
+   scripts and fields exempt from filtering.
+   If you find OpenIMS core scripts or fields that need to be exempt,
+   please report them to core developers at OpenSesame ICT.
+ ***********************************************************/
+
+
+if (!function_exists('IMS_XssPolicy_Extra')) {
+  function IMS_XssPolicy($scriptcategory, $scriptname, $fieldname, $suggestedpolicy) {
+    // $scriptcategory:
+    // - openims   : openims.php
+    // - ufc       : custom ufc handler
+    // - cms       : cms page (NOT cms properties, tinymce etc.)
+    // - other     : everything else, for example form handling (cms / dms properties)
+    // $fieldname  : name of the field being submitted. This function is called one for each field in the request.
+    // $scriptname : name of the script, for example '/nkit/form.php'
+    // $suggestedpolicy (these are also the return values that you can use):
+    // - filter       : standard XSS filtering.
+    // - warn         : log what would happen in case of standard XSS filtering. Note that you could also use 
+    //                : $myconfig["___sites"]["xssfilter"] == "warn" to achieve this, and that way you could log paranoid filtering too.
+    // - paranoid     : standard XSS filtering. Removes stuff such as <style> when we arent certain whether there is XSS or not.
+    // - filterint    : the field should be an integer.
+    // - filteralnum  : the field should be alphanumeric.
+    // - ignore       : ignore this field (i.e. trusted sources that need to use javascript; php code fields; fields that are neither stored nor reflected)
+    
+    return $suggestedpolicy;
+    
+  }
+}
+";}

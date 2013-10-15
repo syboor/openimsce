@@ -1,0 +1,37 @@
+aangepast:
+
+CSS style
+--------------
+jscripts\tiny_mce\plugins\ibrowser\css\style.css
+
+(Div's margin's aangepast, naar links opschuiven)
+
+
+Script voor laden message
+--------------
+jscripts\tiny_mce\plugins\ibrowser\scripts\loadmsg.php
+
+(div helemaal verwijderd)
+
+
+Hoofdbestand
+--------------
+jscripts\tiny_mce\plugins\ibrowser\ibrowser.php
+
+(verwijder en hernoem knop verwijderd, menu en welkom divs verborgen, doorgeven encodedsettings)
+
+PHPthumb
+--------
+openims\libs\tinymcejquery\jscripts\tiny_mce\plugins\ibrowser\scripts\phpThumb\phpThumb.config.php
+(uitschakelen van debugging info)
+
+openims\libs\tinymcejquery\jscripts\tiny_mce\plugins\ibrowser\scripts\phpThumb\phpthumb.class.php
+(uitschakelen Image Magick ivm gebrek aan escaping bij samenstelling command line)
+
+Overig
+------
+jscripts\tiny_mce\plugins\ibrowser\interface\common.js
+(doorgeven server side encoded settings)
+
+jscripts\tiny_mce\plugins\ibrowser\scripts\rfiles.js
+(security)

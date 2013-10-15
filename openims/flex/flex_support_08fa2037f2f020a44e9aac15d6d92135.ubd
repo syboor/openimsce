@@ -1,0 +1,27 @@
+a:2:{s:4:"name";s:13:"DMS Mouseover";s:4:"code";s:918:"if (!function_exists ("DMS_MouseOver")) { // prevent multiple mouseover definitions 
+
+  function DMS_MouseOver($sgn, $id, $command) {
+    $ob = MB_Ref("ims_" . $sgn . "_objects", $id);
+
+    $filesize = N_QuickFileSize(FILES_Filelocation($sgn, $id));
+    $nicesize = "&quot;".($ob["longtitle"]?$ob["longtitle"]:$ob["shorttitle"]) . "&quot; - " .N_NiceSize($filesize);
+    $nicesize = str_replace('"', '_', $nicesize);
+
+    switch($command) {
+    case "view":
+      $title = ML("Bekijk","View")." ".$nicesize;
+      break;
+    case "viewpub":
+      $title = ML("Bekijk gepubliceerde versie","View published version")." ".$nicesize;
+      break;
+    case "edit":
+      $title = ML("Wijzig","Edit")." ".$nicesize;
+      break;
+    case "command":
+      $title = ML("Acties voor","Actions for")." ".$nicesize;
+      break;
+    }
+    return $title;
+  }
+
+} // if (!function_exists ("DMS_MouseOver"))";}

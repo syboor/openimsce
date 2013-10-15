@@ -1,0 +1,665 @@
+a:2:{s:4:"name";s:8:"Skin 2.0";s:4:"code";s:29392:"//<?
+if ( !strpos (N_MyFullURL(), "dmsreport.php") && @$_GET['disable_skin']!="yes" ) // && false
+{
+
+// BELANGRIJKE DINGEN:
+// ========== BIJ het pakket maken =============
+// echo SKIN_ExtraButtons(); => dit moet gecheck worden bij install van pakket
+
+// $goto = N_MyFullURL(); // is deze regel/variabele nodig
+// if $mode==dms maakt currentobject aan! zou nodig kunnen zijn in elke mode checken!
+// $mode==admin heeft nog SHIELD_Unauthorized en SHIELD_NeedsGlobalRight! 
+// default $submode moet worden geinitialiseerd voordat elke suopenims_menudatabmode wordt bepaald
+
+
+if ( !function_exists ("SKIN_GetColor_internal") ) 
+{
+   function SKIN_GetColor_internal( $setting )
+   {
+      $sgn = IMS_supergroupname();
+      $colors = Array( 
+        "blue" =>  Array( "normal" => "#4E8CCF", "dark" => "#0046AD" , "dir" => "/ufc/rapid/openims/sugarcrm_skin/" ),
+        "green" => Array( "normal" => "#6FAE6F", "dark" => "#3E6E3E" , "dir" => "/ufc/rapid/openims/sugarcrm_skin/green/" ),
+        "red"  =>  Array( "normal" => "#C60C30", "dark" => "#790D31" , "dir" => "/ufc/rapid/openims/sugarcrm_skin/red/" )
+      );
+
+      global $myconfig;
+      $color = @$myconfig[  $sgn ][ "skin" ][ "customcolorscheme" ];
+      if ( !$color )
+        $color = @$myconfig[  $sgn ][ "skin" ][ "color" ];
+
+      if ( !$color ) 
+        $color = "blue";
+      return $colors[$color][ $setting ];
+   }
+}
+
+if (!function_exists ("SKIN_GetColor") ) 
+{
+   function SKIN_GetColor()
+   {
+      return SKIN_GetColor_internal( "normal" );
+   }
+}
+
+if (!function_exists ("SKIN_GetColorDark") ) 
+{
+   function SKIN_GetColorDark()
+   {
+      return SKIN_GetColor_internal( "dark" );
+   }
+}
+
+if (!function_exists ("SKIN_GetColorDir") ) 
+{
+  function SKIN_GetColorDir()
+  {
+    return SKIN_GetColor_internal( "dir" );
+    //return "/ufc/rapid/openims/sugarcrm_skin/"; //blue
+    return "/ufc/rapid/openims/sugarcrm_skin/green/"; //green
+    //return "/ufc/rapid/openims/sugarcrm_skin/red/"; //red
+  }    
+}
+
+// SKIN_htmlDoctype is no longer used
+
+if (!function_exists ("SKIN_custom_openims_copyright")) 
+{
+  function SKIN_custom_openims_copyright()
+  {
+    $content = '<center><font face="arial,helvetica" size="1">'.ML('Powered by OpenIMS','Powered by OpenIMS').'<br/>';
+    $content .= ML( 'OpenIMS is een geregistreerd handelsmerk van  OpenSesame ICT B.V.', 'OpenIMS is a registered Trademark of OpenSesame ICT B.V.' ) . '<br/>';
+    $content .= '<a class="ims_disclaimer" href="/openims/termsofuse.txt">Copyright &copy; 2001-' . N_Year();
+    $content .= ' OpenSesame ICT. ';
+    $content .= ML ( "Alle rechten voorbehouden" , "All Rights Reserved" );
+    $content .= '</a></font></center>';
+    $content .= '<br/><center><img src="/ufc/rapid/openims/logo_osict.gif"/></center>';
+    return $content;
+  }
+}
+
+if (!function_exists ("SKIN_preventMenuOutputStart")) { // prevent multiple skin definitions
+  function SKIN_preventMenuOutputStart()
+  {
+    ob_start();
+  }
+}
+
+if (!function_exists ("SKIN_preventMenuOutputEnd")) { // prevent multiple skin definitions
+  function SKIN_preventMenuOutputEnd()
+  {
+    ob_end_clean();
+  }
+}
+
+if (!function_exists ("SKIN_preventEmptyColumnStart")) { // prevent multiple skin definitions
+  function SKIN_preventEmptyColumnStart( $side )
+  {
+    ob_start();
+  }
+}
+
+if (!function_exists ("SKIN_preventEmptyColumnEnd")) { // prevent multiple skin definitions
+  function SKIN_preventEmptyColumnEnd( $side )
+  {
+    $ob_contents = ob_get_contents();
+    ob_end_clean();
+    if( $side=="LEFT" || $ob_contents!= "" )
+      print( '<td width="20%" class="openims_column_left">' . $ob_contents ) . "</td>";
+  }
+}
+
+if (!function_exists ("SKIN_classTable")) {
+function SKIN_classTable( $specs , $classPrefix = "Portlet" )
+{
+  $tableparams["table-props"]   = $specs["extra-table-props"].' class="'.$classPrefix.'TableNav"'; //cellpadding="0" cellspacing="0"
+  $tableparams["td-head-props"] = 'align="'.$specs["td-head-align"].'" class="'.$classPrefix.'Header"';
+  $tableparams["td-std-props"]  = 'align="'.$specs["td-std-align"].'" class="'.$classPrefix.'Cell"';
+
+  /*
+  $tableparams["td-head-init"]  = '';
+  $tableparams["td-head-exit"]  = '';
+  $tableparams["td-std-init"]   = '';
+  $tableparams["td-std-exit"]   = '';
+  */
+  $tableparams["td-sortlink-style"] = '
+    <STYLE type="text/css"><!--
+      A.###{color: #000000; text-decoration: none}
+      A.###:hover{color: #000000; text-decoration: underline}
+    --></STYLE>
+  ';
+  return $tableparams;
+}
+}
+
+if (!function_exists ("SKIN_menu")) 
+{
+  function SKIN_menu()
+  {
+    if ( function_exists("SKIN_buildMenu") ) 
+    {
+      $menu = SKIN_buildMenu();
+      return SKIN_drawMenu( $menu );
+    }
+  }
+}
+
+if (!function_exists ("SKIN_extraBar")) {
+function SKIN_extraBar( $menu )
+{
+  return $menu["html_title"];
+}
+}
+
+
+if (!function_exists ("SKIN_drawHtmlTitle")) 
+{
+  function SKIN_drawHtmlTitle( $menu )
+  {
+    return $menu["html_title"];
+  }
+}
+
+if ( !function_exists ("SKIN_drawMenu") )
+{
+function SKIN_drawMenu( $menu )
+{ 
+  global $myconfig;
+  $sgn = IMS_supergroupname();
+  $doToggle = @$myconfig[ $sgn ][ "skin" ][ "menu_hide_toggler" ] != "no";
+
+  $skinMenuClosed = $_COOKIE["skin_menuDisplayToggleState"] == "closed";
+
+  $closedHeight = "23px";
+  $openedHeight = "";//"146px";
+  $currentHeight = ( $doToggle && $skinMenuClosed ? $closedHeight : $openedHeight );
+  $imgHeight = ( ($doToggle && $skinMenuClosed=="closed")?$closedHeight:"");
+
+  $ret = "<div id='openimsTotalWrapper' style='height:" . $currentHeight . "'>";
+
+//  $ret = DHTML_loadJquery();
+
+  $ret .= "<div class='dropdownContainer'><div class='dropdownMenu' id='menu_admin' style='display:none'><button style='float:right;' type=\"button\" onclick=\"$(this).parent().hide()\">".ML("Sluiten","close")."</button>";
+  foreach( $menu['links']['submenus']['admin'] AS $productID => $productItem )
+  {
+    $ret .= '<a class="dropdownMenu ' . ($productItem["selected"] ? 'dropdownMenuSelected':'dropdownNenuNormal') . '" href="' . $productItem["url"] . '">' . $productItem["shorttitle"] . '</a><br/>';
+  }
+  $ret .= "</div></div>";
+
+  $ret .= "<div class='topLinksContainer'><div class='topLinksSplitter'>" . ML("Welkom","Welcome") . ", <span class='ims_username'>" . $menu["username"] . "</span></div><div class='topLinksSplitter'>";
+
+  $postFix = '';
+  foreach( $menu["links"]["top"] AS $key => $menuItem )
+  {
+    if ( $postFix != '' ) $postFix .= ' | ';
+
+    if ( $key!='admin' )
+    {
+      $postFix .= "\n" . '<a
+                   target="' . @$menuItem['target'] . '"
+                   id="topLinks_'.$key.'"
+                   class="topLinks ' . (@$menuItem['selected'] ? 'linksOver' : 'linksOut') . '"
+                   href="' . $menuItem["url"] . '">' . $menuItem["shorttitle"] . '</a>';
+    } else
+      $postFix .= '<a id="skin_menuToggler" href="javascript:;" onclick="$(\'#menu_admin\').show();return false;">Admin <img border="0" src="/ufc/rapid/openims/sugarcrm_skin/MoreDetail.png"></a>';
+  }
+  $ret .= $postFix;
+
+  $ret .= "</div>";
+  if ( $menu["options"]["hidelanguages"] != "yes" )
+    $ret .= "<div class='topLinksSplitter'>" . str_replace( "</tr><tr>" , "" , ML_LanguageSelect() ) . "</div>";
+
+  if ( $doToggle )
+  {
+    $ret .= "<a href='javascript:;' onclick=\"skin_toggleTotalWrapper();return false;\">";
+    $ret .= '<img id="skinMenuTogglerImg" border=0 src="/ufc/rapid/openims/sugarcrm_skin/' . ( $skinMenuClosed?"down_arrow.gif":"up_arrow.gif" ) . '">';
+    $ret .= "</a>";
+  }
+
+  $ret .= "</div>";
+
+
+  $logo = @$menu['customerlogo'] ? $menu['customerlogo'] : '/ufc/rapid/openims/logo_osict.gif'; ///ufc/rapid/openims/logo_osict2.gif
+
+  if ( $doToggle )
+  {
+    $ret .= "<script language='javascript'>
+openIMSlogoHeight = new Image();
+openIMSlogoHeight.src='" . addcslashes( $logo , "'" ) . "';
+skin_down_arrow = new Image();
+skin_down_arrow.src='/ufc/rapid/openims/sugarcrm_skin/down_arrow.gif';
+skin_up_arrow = new Image();
+skin_up_arrow.src='/ufc/rapid/openims/sugarcrm_skin/up_arrow.gif';
+           </script>";
+  }
+
+  $skin_logo_url = @$myconfig[ $sgn ]["skin" ][ "logo_url" ];
+
+  if ( !$skin_logo_url && $doToggle )
+    $ret .= "<a href='javascript:;' onclick=\"skin_toggleTotalWrapper();return false;\">"; 
+  else if ( $skin_logo_url ) 
+    $ret .= "<a href='".$skin_logo_url."'>";
+
+  $ret .= "<img id='openIMSlogo' src='{$logo}' style='height:".$imgHeight."' />";
+  $ret .= "</a>";
+
+  $ret .= '<div class="searchContainer"> 
+             <form action="/openims/openims.php" method="put" style="margin:0px;padding:0px">
+               <table cellpadding="0" cellspacing="0">
+                 <tr>
+                   <td valign="middle">
+                     <input type="text" name="q" class="inputText inputSearch" size="20" value="' . N_htmlentities( @$_GET['q'] ) . '"><input type="hidden" name="mode" value="search">
+                   </td><td valign="middle">
+                     <input type="submit" class="inputButton" value="'.ML('Zoeken','Search').'">
+                   </td>
+                 </tr>
+               </table>
+            </form>
+          </div>';
+
+  $ret .= "<div class='topMenuContainer'><a class='topMenu topNormal' href='javascript:;'>&nbsp;</a>";
+
+  foreach( $menu["links"]["products"] AS $productID => $productItem ) //if ( $subMenu != 'admin' 
+  {
+    $ret .= '<a style="display:'.($productItem["selected"]?'block':'none').'" id="leftSide_'.$productID.'" class="topMenuLeftSide"></a>
+             <a
+               id="topMenu_'.$productID.'" 
+               key="'.$productID.'"
+               onmouseover="return skin_menuMouseover( this );" 
+               onmouseout="return skin_menuMouseout( this );"
+               class="topMenu ' . ($productItem["selected"]?'topSelected':'topNormal') . '" 
+               href="' . $productItem["url"] . '">' . $productItem["shorttitle"] . '</a>';
+  }
+  $ret .= "</div>";
+
+  $ret .= "<div class='subMenuContainer'>";
+
+  foreach( $menu["links"]["products"] AS $productID => $productItem )
+  {
+    $ret .= "<div class='subMenu' id='subMenu_{$productID}' style='display:".($menu['selected']['mode']==$productID?'block':'none').";'>"; 
+    foreach( $menu["links"]["submenus"][$productID] AS $subItemID => $subItem ) //if ( $subMenu != 'admin' 
+    {
+      $ret .= '<a class="subMenu ' . ($subItem["selected"]?'subSelected':'subNormal') . '" href="' . $subItem["url"] . '">' . $subItem["shorttitle"] . '</a>';
+    }
+    $ret .= "</div>";
+  }
+
+  $ret .= "</div>";
+
+  $ret .= "<div class='recentContainer'><div class='recent'>";
+  if ( function_exists( "SKIN_extraBar" ) ) 
+    $ret .= SKIN_extraBar( $menu );
+  $ret .= "</div></div>";
+  $ret .= "</div>";// id='openimsTotalWrapper'
+
+  return $ret;
+}
+}
+
+if (!function_exists ("SKIN_PorletTableNav")) 
+{
+function SKIN_PorletTableNav( $specs )
+{    
+  return SKIN_classTable( $specs  );
+}
+}
+
+if (!function_exists ("SKIN_PorletTableDocnav")) 
+{
+function SKIN_PorletTableDocnav( $specs )
+{    
+  return SKIN_classTable( $specs  );
+}
+}
+if (!function_exists ("SKIN_PorletTableAction")) 
+{
+function SKIN_PorletTableAction( $specs )
+{    
+  return SKIN_classTable( $specs );
+}
+}
+
+if (!function_exists ("SKIN_ContentTable")) 
+{
+function SKIN_ContentTable( $specs )
+{
+  return SKIN_classTable($specs , "Content" );
+}
+}
+
+if (!function_exists ("SKIN_CSS")) 
+{
+function SKIN_CSS ()
+{
+  $color = SKIN_GetColor();
+  $colordir = SKIN_GetColorDir();
+ 
+  $css = '<STYLE type="text/css">';
+  $css .= '<!--';
+
+  $css .= '.ims_skin_button{ cursor:pointer !important;background:#ECF1F4 url('.SKIN_GetColorDir().'bgBtn.gif) repeat-x; border:1px solid #ABC3D7; font-size:12px; padding:0px;padding-left:5px;padding-right:5px;vertical-align:absmiddle;font-weight:bold;}';
+  $css .= '.ims_skin_button:hover{background-color:'.SKIN_GetColor().';background-image:none;color:white;cursor:pointer;}';
+
+  if (strpos (N_MyFullURL(), "openims.php")) {
+    $css .= 'A{color: #000000; text-decoration: underline}';
+    $css .= 'A:hover{color: #000000}';
+  }
+
+  $css .= '/*' . N_MyFullURL() . '*/';
+
+  global $site_id;
+  if ( !isset( $site_id ) || strpos (N_MyFullURL(), "openims.php") )
+  {
+    $css .= 'div#openimsTotalWrapper{overflow:hidden}';
+
+    $css .= 'img#skinMenuTogglerImg{margin-right:7px;margin-top:7px;padding-bottom:2px;}';
+
+    $css .= '*{ font-family: Arial, Helvetica, sans-serif;font-size:12px }';
+    $css .= 'body{padding:0px;margin:0px;background:#F6F6F6}';
+    $css .= 'form{padding:0px;margin:0px; }'; 
+    $css .= 'body.openims_php{background:white;}';
+    $css .= "img#openIMSlogo{float:left;overflow:hidden;margin:0px;margin-left:15px;border:0px}";
+
+    $css .= "div.searchContainer{float:right;clear:right;margin-top:10px;margin-right:10px;margin-top:12px;margin-bottom:3px;}";
+
+    $css .= "div.dropdownContainer{float:right;width:220px;margin-right:10px;}";
+    $css .= "div.dropdownMenu{margin:0px;z-index:1000;top:25px;width:200px;list-style-type:none;background:#F6F6F6;border:1px solid black;padding:5px;border:1px solid blue;position:absolute;}";
+
+    $css .= "a.dropdownMenuSelected{font-weight:bold;}";
+    $css .= "div.topLinksContainer{float:right;clear:both}";
+    $css .= "div.topLinksSplitter{border-right:2px solid #DDDDDD;float:left; margin-right:6px;padding:6px; }";
+    $css .= "span.ims_username{font-weight:bold;}";
+    $css .= "a.topLinks{}"; //text-decoration:none;
+    $css .= "a.linksOut{}";
+    $css .= "a.linksOver{font-weight:bold;text-decoration:underline;}";
+
+    $css .= "div.topMenuContainer { width:100%;height:26px;clear:both;background:white url(".SKIN_GetColorDir()."tabRowBg.gif) repeat-x;overflow:hidden}";
+
+    $css .= "div.recentContainer{vertical-align:top;width:100%;height:25px;clear:both;background:#F5FAFC;border-bottom:2px solid ".SKIN_GetColor()."}";
+    $css .= "div.recent,div.recent *{padding-top:6px;padding-left:10px;;font-size:12px}";
+
+    $css .= "a.topMenu{vertical-align:bottom;font-weight:bold;display:block;vertical-align:bottom;padding-top:7px;padding-bottom:2px;padding-left:10px;padding-right:10px;text-decoration:none;text-align:center;float:left}";
+    $css .= "a.topNormal{background:url(".SKIN_GetColorDir()."otherTab.gif) right top no-repeat;}";//border-bottom:2px solid #790D31
+    $css .= "a.topMenuLeftSide{float:left;background:url(".SKIN_GetColorDir()."currentTab.gif ) left top;height:25px;display:block;width:2px;}";
+
+    $css .= "a.topSelected{padding-bottom:7px;background:url(".SKIN_GetColorDir()."currentTab.gif) right top repeat-x;color:white;border-bottom:3px solid ".SKIN_GetColorDark()."}}";
+    $css .= "a.topSelected:hover{color:white}";
+
+    $css .= "div.subMenuContainer{vertical-align:bottom;width:100%;clear:both;background:".SKIN_GetColor().";border-bottom:2px solid ".SKIN_GetColorDark().";overflow:hidden;padding-top:3px;padding-bottom:3px;}";
+//    $css .= "div.subMenu{margin-top:6px;margin-bottom:6px}";
+    $css .= "a.subMenu{ margin-top:2px;margin-bottom:2px;float:left;color:white;text-decoration:none;padding-left:5px;padding-right:5px;display:block;border-right:1px solid white;white-space:nowrap;}";//".SKIN_GetColor()."
+    $css .= "a.subMenu:hover{ background:".SKIN_GetColorDark().";color:white; }";
+    $css .= "textarea#codetester{width:100% !important}";
+
+
+    $css .= "a.subNormal{}";
+    $css .= "a.subSelected{font-weight:bold}";
+
+    // LF: no pixel width on these td's, because of an IE bug: if some element inside the td is too big (causes
+    // the entire td to expand), all the other elements inside the td that have width=100% should use the "extra"
+    // width as well. But in IE, if you declare a pixel width, the other elements will use the declared pixel
+    // width instead of the actual width :(
+    // http://www.cs.tut.fi/~jkorpela/www/width-bug.html
+    $css .= 'td.openims_left_column{width:20%;}';
+    $css .= 'td.openims_right_column{width:20%;}';
+    $css .= 'td.openims_middle_column{width:auto;}';
+  }
+
+  $css .= 'table#MeasureMe{ background: #F6F6F6;margin-top:15px;margin-left:20px;}';
+
+  // staat om de content table
+  $css .= 'table.PortletTableNav{ border-collapse:collapse; border:0px solid white; margin-top:5px; width:100%}';
+  $css .= 'table.PortletTableNav td.PortletHeader{ color:#000000; border:0px; padding:3px; padding-top:6px; background: white url('.SKIN_GetColorDir().'bg.gif) repeat-x;font-weight:bold; font-size:12px;}';
+  $css .= 'table.PortletTableNav td.PortletHeader * { font-weight:inherit !important; }';
+  $css .= 'table.PortletTableNav td.PortletCell { background-color: #FCFCFC; border:1px solid  '.SKIN_GetColor().'; padding:4px; }';
+  $css .= 'table#centerBlock td.PortletCell{border:0px;padding:0px}';//;background:yellow
+
+  $css .= '.skin_border{ border:1px solid  '.SKIN_GetColor().'}';
+
+  // ContentTable in het midden
+  $css .= 'table.ContentTableNav{border-collapse:collapse;width:100%;border:0px;}';//margin-left:auto;margin-right:auto;
+  $css .= 'table.ContentTableNav td.ContentHeader{ border: solid #CCCCCC 1px; color:#444444; background: #ECECED;font-weight:bold; font-size:12px;padding:1px;;padding-left:2px; }';
+  $css .= 'table.ContentTableNav td.ContentCell{ border:1px solid #CCCCCC;padding:1px;padding:1px;padding-left:2px; }';
+
+  // special coolbar styles
+  $css .= '.ims_image { display: inline; }';
+  $css .= '.ims_td { margin:0px; padding:2px; }';
+  $css .= '.ims_text1 {color: #FF0000; text-decoration: none; font-size: 12px; font-weight:bold;}';
+  $css .= '.ims_text2 {color: #000000; text-decoration: none }';
+  $css .= '.ims_text3 {color: #000000; text-decoration: none }';
+ 
+  // menu's, buttons, folders, actions
+  $css .= 'A.ims_navigation{color: #000000; text-decoration: none}';
+  $css .= 'A.ims_navigation:hover{color: #000000; text-decoration: underline;}';
+
+  // portlet heading hyperlinks
+  $css .= 'A.ims_headnav{color: #000000; text-decoration: none}';
+  $css .= 'A.ims_headnav:hover{color: #000000; text-decoration: underline}';
+
+  // active navigation item
+  $css .= 'A.ims_active{color: #000000; text-decoration: none; font-weight: bold !important;}';
+  $css .= 'A.ims_active:hover{color: #000000; text-decoration: underline; font-weight: bold !important;}';
+
+  // embedded links (e.g. process editor, search navigation)
+  $css .= 'A.ims_link{color: #444444; text-decoration: underline}';
+  $css .= 'A.ims_link:hover{color: #000000; text-decoration: underline}';
+
+  $css .= 'A.treelink{color: #444444; text-decoration: underline}';
+  $css .= 'A.treelink:hover{color: #000000; text-decoration: underline}';
+
+  // result links
+  $css .= 'A.ims_result{color: #444444; text-decoration: underline}';
+  $css .= 'a.ims_result:link{color:#444444}';
+  $css .= 'A.ims_result:hover{color: #000000}';
+  $css .= 'a.ims_result:visited{color:#999999}';
+
+  // news links
+  $css .= 'A.ims_news{color: #000366; text-decoration: underline }';
+  $css .= 'A.ims_news:hover{color: #000000}';
+
+  $css .= 'input.inputText,input.inputFile,textarea{ font-size:12px;font-family:arial,verdana;border:1px solid #CCCCCC;}';//border:1px solid '.SKIN_GetColor().';
+  $css .= 'textarea{font-family:monospace}';
+//  $css .= 'input.inputText:focus,input.inputFile:hover,textarea:hover{border:1px solid '.SKIN_GetColor().'}';
+  $css .= 'input.inputSearch{background:#F7FBFD;margin-right:3px;}';
+  $css .= 'button,input.inputButton{ cursor:pointer !important;background:#ECF1F4 url('.SKIN_GetColorDir().'bgBtn.gif) repeat-x; border:1px solid #ABC3D7; font-size:12px; padding:0px;vertical-align:absmiddle;}';
+  $css .= 'button:hover,input.inputButton:hover{background-color:'.SKIN_GetColor().';background-image:none;color:white;cursor:pointer;}';
+  
+  $css .= '-->';
+  $css .= '</STYLE>';
+
+  if (strpos (N_MyFullURL(), "openims.php"))
+  {
+    global $myconfig;
+    $sgn = IMS_supergroupname();
+    $doToggle = @$myconfig[ $sgn ][ "skin" ][ "menu_hide_toggler" ] != "no";
+
+    $css .= DHTML_RequireAll();
+    $css .= "<script language='javascript' src='/openims/libs/jquery/plugins/jquery.cookie.js'></script>";
+
+    if ( $doToggle )
+    {
+      $animation_duration = @$myconfig[ $sgn ][ "skin" ][ "menu_hide_toggler_animation_duration" ];
+      if ( !$animation_duration ) $animation_duration = "200";
+
+      $css .= "<script language='javascript'>
+
+             function skin_toggleTotalWrapper()
+             {
+//                alert( $('img#skinMenuTogglerImg').length );
+
+		var wrapper = $('#openimsTotalWrapper');     
+		if ( wrapper.css( 'height' )!='23px' )
+		{
+  		  wrapper.animate( { 'height' : '23px' } , { duration: " . $animation_duration . " } ); //skin_totalWrapperDone
+  		  $('#openIMSlogo').animate( { 'height' : '23px' } , { duration: " . $animation_duration . " } ); //skin_totalWrapperDone
+		  $.cookie( 'skin_menuDisplayToggleState', 'closed' );
+		  $('img#skinMenuTogglerImg').get(0).src = window.skin_down_arrow.src;
+		} else {
+  		  $('#openIMSlogo').animate( { 'height' : openIMSlogoHeight.height } , { duration: " . $animation_duration . " } ); //skin_totalWrapperDone
+                  // We can only animate the when image is resized to it's full size, so a callback is needed to resize to auto
+		  wrapper.animate( { 'height' : '148px' } , " . $animation_duration . " , 'linear' , function() { $(this).css( 'height' , 'auto' ); } ); //skin_totalWrapperDone
+		  $.cookie( 'skin_menuDisplayToggleState', 'open' );
+		  $('img#skinMenuTogglerImg').get(0).src = window.skin_up_arrow.src;
+		}
+	     }
+      </script>";
+    } // $doToggle
+
+    $css .= "<script language='javascript'>
+
+             var skin_timer = false;
+             function skin_menuMouseover( obj )
+             {
+               if ( skin_timer )
+                 clearTimeout( skin_timer );
+               skin_timer = setTimeout( 'skin_menuSelect(\"'+obj.getAttribute( 'key' )+'\")' , 150 );
+             }
+             function skin_menuMouseout( obj )
+             {
+               if ( skin_timer )
+               {
+                 clearTimeout( skin_timer );
+               }
+             }
+
+             function skin_menuSelect( key )
+             {
+               if ( $('div#subMenu_'+ key ).length > 0 )
+               { 
+                 $( 'a.topMenu' ).removeClass( 'topSelected' ).addClass( 'topNormal' );
+
+                 $('.topMenuLeftSide').hide();
+                 $('#leftSide_' + key ).show();
+
+                 var selMenu = '#topMenu_' + key;
+                 $( selMenu ).addClass('topSelected');
+                 $('div.subMenu').hide();
+                 $('div#subMenu_' + key ).show();
+                 return false;
+               }
+             }
+
+             function skin_styleForms()
+             {
+               var x = document.getElementsByTagName('input');
+               for (var i=0;i<x.length;i++) 
+               {
+                 var type = x[i].type;
+                 var oldclass = x[i].className;
+                 oldclass = (oldclass ? oldclass + ' ' : oldclass);
+                 if (type == 'text' || type == '' || type == 'password') x[i].className = oldclass + 'inputText';
+                 if (type == 'radio') x[i].className = oldclass + 'inputRadio';
+                 if (type == 'file') x[i].className = oldclass + 'inputFile';
+                 if (type == 'checkbox') x[i].className = oldclass + 'inputCheckbox';
+                 if (type == 'button' || type == 'submit' || type == 'reset') x[i].className = oldclass + 'inputButton';
+               }
+             }
+             $( document ).ready( function() { skin_styleForms(); } );
+           </script>";
+  } // openims.php
+  return $css;
+ }
+}
+
+if (!function_exists ("SKIN_BgColor")) 
+{
+function SKIN_BgColor()                 { return "FFFFFF"; }
+function SKIN_Background()              { return ""; }      //  return "/openims/background_005.gif"; 
+function SKIN_Bottom_Background()       { return ""; }
+function SKIN_Bottom_BgColor()          { return "FFFFFF"; }
+function SKIN_Top_Background()          { return ""; }
+function SKIN_Top_BgColor()             { return "FFFFFF"; }
+function SKIN_ExtraButtons()            { return ""; }
+function SKIN_HorizontalSeparator()     { return "/openims/bottom.gif"; } // Table with background and the same image
+function SKIN_LeftPortletHeaderImage()  { return ""; }
+function SKIN_RightPortletHeaderImage() { return ""; }
+function SKIN_PortalButton_Edit()       { return "/ufc/rapid/openims/sugarcrm_skin/edit.png"; }
+function SKIN_PortalButton_Delete()     { return "/ufc/rapid/openims/sugarcrm_skin/delete.png"; }
+function SKIN_PortalButton_Up()         { return "/ufc/rapid/openims/sugarcrm_skin/up.png"; }
+function SKIN_PortalButton_Down()       { return "/ufc/rapid/openims/sugarcrm_skin/down.png"; }
+function SKIN_PortalButton_Left()       { return "/ufc/rapid/openims/sugarcrm_skin/left.png"; }
+function SKIN_PortalButton_Right()      { return "/ufc/rapid/openims/sugarcrm_skin/right.png"; }
+function SKIN_PortalBackground()        { return ""; }
+
+} // if (!function_exists ("SKIN_BgColor"))
+
+
+if (!function_exists ("SKIN_TabStyle") ) 
+{
+   function SKIN_TabStyle()
+   {
+      return '
+        .ims_tabcontainer { display: block; margin: 10px 0 0 0; padding: 0; }
+        .ims_tabcontainer ul { list-style: none; margin: 0; padding: 0; border: none; }
+        .ims_tabcontainer li { list-style: none; display: block; margin: 0; padding: 0 2px 0 0; float: left; }
+        .ims_tabcontainer a, .ims_tabcontainer a:visited { color: #333; display: block; text-decoration: none; float: left;
+                                                           margin: 0; padding: 2px 10px; background: #fff; line-height: 16px;
+                                                           border-top: 1px solid '.SKIN_GetColorDark().'; border-left: 1px solid '.SKIN_GetColorDark().'; border-right: 1px solid '.SKIN_GetColorDark().'; }//#0863C6
+        .ims_tabcontainer a:hover, .ims_tabcontainer a:active { text-decoration: underline; }
+        .ims_tabcontainer a.active, .ims_tabcontainer a.active:link, .ims_tabcontainer a.active:visited { background:'.SKIN_GetColor().'; color: white; font-weight: bold; text-decoration: none; }
+        .ims_tabcontainer a.active:hover, .ims_tabcontainer a.active:active { text-decoration: underline; }
+        .ims_tabcontentwrap1 { width: 100%; float: left; clear: left; }
+        * html .ims_tabcontentwrap1 { margin-top: -10px; overflow: auto; border: 1px solid '.SKIN_GetColorDark().'; } 
+          /* Rules starning with * html are IE specific. */
+          /* I dont know where that 10px vertical space in IE comes from, but margin-top: -10px gets rid of it */
+          /* Somehow, when the content is too large, IE doesnt grow the containing box. Hence the overflow: auto to get scroll bars, and the border to get the border around the scroll bars instead of inside it */
+        .ims_tabcontentwrap2 { border: 1px solid '.SKIN_GetColorDark().'; margin-right: 4px; margin-bottom: 4px; }
+        * html .ims_tabcontentwrap2 { border: none; margin: 0; }
+        .ims_tabcontent { margin: 10px; } /* must be margin, not padding, so that the margin is allowed to collapse with margins of elements inside it */
+      ';
+   }
+}
+
+if (!function_exists ("SKIN_WizardbarStyle")) 
+{
+   function SKIN_WizardbarStyle()
+   {
+      /* Example with fake buttons (only looks good if all icon images are transparent! */
+      // return '
+      //   .ims_wizardbarwrap { margin: 10px 0 10px 0; padding: 0; vertical-align: middle; }
+      //   .ims_wizardbar { display: inline; margin-left: 0; width: auto; vertical-align: middle; background-color: #ddd; padding: 2px;border: 1px solid #999; }
+      //   .ims_wizardbarwrap>.ims_wizardbar { display: inline-block; }
+      //   .ims_wizardbar img { vertical-align: middle; border-bottom: 1px solid #999; border-right: 1px solid #999; border-top: 1px solid #fff; border-left: 1px solid #fff; }
+      // ';
+
+      return '
+        .ims_wizardbarwrap { margin: 10px 0 10px 0; padding: 0; vertical-align: middle; }
+        .ims_wizardbar { display: inline; margin-left: 0; width: auto; vertical-align: middle; }
+        .ims_wizardbarwrap>.ims_wizardbar { display: inline-block; }
+        .ims_wizardbar img { vertical-align: text-bottom; }
+.ims_wizardbar a 
+{
+  background:url("/ufc/rapid/openims/sugarcrm_skin/bgBtn.gif") repeat-x scroll 0 0 #ECF1F4;
+  border:1px solid #ABC3D7;
+  padding:2px;
+  padding-left:10px;
+  padding-right:10px;
+  font-size:10px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.ims_wizardbar a:hover
+{
+/*  background:url("/ufc/rapid/openims/sugarcrm_skin/bgBtn.gif") repeat-x scroll 0 0 #ECF1F4;*/
+  border:1px solid #ABC3D7;
+  text-decoration:none;
+  background-color:'.SKIN_GetColor().';
+  background-image:none;
+  color:white;
+}
+
+
+      ';
+   }
+}
+
+
+
+// Automatische link
+/*
+$internal_component = FLEX_LoadImportableComponent ("support", "1c155d75e1768c0639a92212be6240d9");
+$internal_code = $internal_component["code"];
+eval ($internal_code);
+*/
+} // noskin";}

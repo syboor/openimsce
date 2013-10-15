@@ -1,0 +1,44 @@
+body, div, p, th, td, li, dd {
+  font-family: Trebuchet MS, Arial, sans-serif;
+  font-size: 11px;
+}
+#coolbartoggle, #coolbar, #header, #hormenu, #left {
+  display: none;
+}
+#main {
+  color: #000;
+  background-color: #FFF;
+}
+#footer {
+  color: #000;
+  background-color: #FFF;
+  padding: 5px 30px 5px 30px;
+  text-align: center;
+}  
+.clear {
+  clear:both;
+}
+
+.clickpath a {
+	text-decoration: none;
+}
+.clickpath a.active {
+	font-weight: bold;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  color: #849CB9;
+}
+h1 {
+  font-size: 16pt;
+}
+h2 {
+  font-size: 14pt;
+}
+h3 {
+  font-size: 12pt;
+}
+h4,h5,h6 {
+  font-size: 11pt;
+  font-weight: bold;
+}

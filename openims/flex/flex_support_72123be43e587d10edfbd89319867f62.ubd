@@ -1,0 +1,15 @@
+a:2:{s:4:"name";s:32:"WORD_NeeviaPdfConversionSettings";s:4:"code";s:510:"if (!function_exists('WORD_NeeviaPdfConversionSettings')) {
+  function WORD_NeeviaPdfConversionSettings($filename=""){
+    $dynpars = array(
+      "PDFEncryption"=>"true",
+      "PDFEncryptionType"=>"40",
+      "PDFNoPrintPermission"=>"false",
+      "PDFNoCopyPermission"=>"false",
+      "PDFUserPassword"=>"",
+      "DocumentResolution"=>"600");
+    return $dynpars;
+  }
+}
+
+// Use $myconfig["neeviadocformats"] = array("doc", "xls", ....) to specify which documents the Neevia server can handle
+";}

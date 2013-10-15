@@ -1,0 +1,50 @@
+a:2:{s:4:"name";s:28:"Cookielogin events (default)";s:4:"code";s:2290:"/* THESE FUNCTIONS WILL ONLY BE CALLED WORK IF THE COOKIELOGON MECHANISM IS USED */
+
+if (!function_exists("SHIELD_CookieLogon_BlockInteractiveLogon_Extra")) { 
+  function SHIELD_CookieLogon_BlockInteractiveLogon_Extra($supergroupname, $username) {
+    /* If this function returns true, login will be disallowed and the user will get some message about being temporarily banned */
+    return false;
+  }
+}
+
+if (!function_exists("SHIELD_AfterInteractiveLogon_Extra")) { 
+  function SHIELD_AfterInteractiveLogon_Extra($supergroupname, $username, $rememberme, $goto, $sessionkey) {
+    /* This function will be called after a succesful interactive cookie logon. Use this function for extra logging, 
+     * resetting failed logon counters, modifying the session based on the user's privileges, etc.
+     * You can even redirect to a "you must change your password now" page.
+     */
+    return;
+  }
+}
+
+if (!function_exists("SHIELD_AfterFailedInteractiveLogon_Extra")) { 
+  function SHIELD_AfterFailedInteractiveLogon_Extra($supergroupname, $username, $rememberme) {
+    /* This function will be called after a failed interactive cookie logon (wrong username or password). Use 
+     * this function for extra logging, updating failed logon counters, etc.
+     */
+    return;
+  }
+}
+
+if (!function_exists("SHIELD_AfterResumePermanentLogon_Extra")) { 
+  function SHIELD_AfterResumePermanentLogon_Extra($sgn, $user_id) {
+    /* This function will be called when a permanently logged in user starts a new browser session.
+     * So the scenario is
+     * 1. user logs in with "remember be" (SHIELD_AfterInteractiveLogon_Extra is called)
+     * 2. user exits browser
+     * 3. user restarts browser and visits some part of OpenIMS that *requires* a logged in user
+     * 4. user is automatically logged in and this function is called
+     */
+    return;
+  }
+}
+
+if (!function_exists("SHIELD_AfterLogoff_Extra")) { 
+  function SHIELD_AfterLogoff_Extra($sgn, $user_id) {
+    /* !!! This function will ***NOT*** be called when the user exits the browser. !!!
+     * This function is called when the user visits openims/logout.php (usually through a 
+     * link in the OpenIMS UI, but that is something that you need to configure).
+     */
+    return;
+  }
+}";}

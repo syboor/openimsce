@@ -1,0 +1,18 @@
+a:2:{s:4:"name";s:25:"Security filter (default)";s:4:"code";s:503:"if (!function_exists ("SHIELD_HasObjectRight_Extra")) { // prevent multiple filter definitions
+
+function SHIELD_HasObjectRight_Extra ($supergroupname, $object_id, $right)
+{
+  return true;
+}
+
+function SHIELD_HasGlobalRight_Extra ($supergroupname, $right, $securitysection)
+{
+  return true;
+}
+
+function SHIELD_AddDynamicGroups_Extra ($staticgroups, $supergroupname, $username, $securitysection, $object_id, $folder_id)
+{
+  return array();
+}
+
+} // if (!function_exists ("SHIELD_Restrict"))";}

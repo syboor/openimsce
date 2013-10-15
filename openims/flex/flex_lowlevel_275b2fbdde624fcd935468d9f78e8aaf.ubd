@@ -1,0 +1,22 @@
+a:2:{s:4:"name";s:16:"Reindex Postcode";s:4:"code";s:674:"if (!function_exists ("TERRA_LOGIC_Reindex_Extra_Postcode")) {
+
+function TERRA_LOGIC_Reindex_Extra_Postcode($sitecollections) {
+  // This function will be called after full text reindexing. 
+
+  // $sitecollections is an array containing all sitecollections if the administrator used the
+  // "all sitecollections" link, or an array containing only the current sitecollection
+  // if the administrator uses the "this sitecollection" link.
+
+  return;
+}
+
+}
+
+if (!function_exists ("IMS_DestroyXMLIndexes_Extra_Postcode")) {
+
+function IMS_DestroyXMLIndexes_Extra_Postcode() {
+  // This function will be called after destroying the XML indexes.
+  return;
+}
+
+}";}

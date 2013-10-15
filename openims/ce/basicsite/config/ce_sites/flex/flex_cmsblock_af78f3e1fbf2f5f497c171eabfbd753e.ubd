@@ -1,0 +1,5 @@
+a:3:{s:4:"name";s:10:"[[[jump]]]";s:3:"tag";s:4:"jump";s:12:"code_content";s:167:"if (IMS_Preview()) {
+  $content = ML("Deze pagina springt naar","This page jumps to")." ".$context["flexparams"];
+} else {
+  N_Redirect ($context["flexparams"]);
+}";}

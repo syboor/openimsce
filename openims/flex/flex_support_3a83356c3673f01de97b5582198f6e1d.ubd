@@ -1,0 +1,18 @@
+a:2:{s:4:"name";s:23:"HTML filter (voorbeeld)";s:4:"code";s:542:"if (!function_exists ("IMS_HtmlFilter")) { // prevent multiple filter definitions
+
+function IMS_HtmlFilter ($content)
+{
+
+  // show metatdata from webgenerator
+  $pat = "#[<]!--[[]if supportFields.[>]([^!]*)MACROBUTTON.*OPENIMS_FIELD_[a-zA-Z_]*[^a-zA-Z_]([^<]*.*)[<]![[]endif.--[>]#Uims";
+  $rep = "\\1\\2";
+  $content = preg_replace ($pat, $rep, $content);
+
+  // ignore MS Word VML logic for images
+  $content = str_replace ("vml", "ignorevml", $content);
+
+  return $content;
+
+}
+
+} // if (!function_exists ("IMS_HtmlFilter"))";}

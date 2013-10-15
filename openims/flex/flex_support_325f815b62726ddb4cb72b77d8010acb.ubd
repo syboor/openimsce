@@ -1,0 +1,8 @@
+a:2:{s:4:"name";s:20:"HTML fixer (default)";s:4:"code";s:191:"if (!function_exists ("IMS_Htmlfixer")) { // prevent multiple filter definitions
+
+function IMS_Htmlfixer ($content)
+{
+  return $content;
+}
+
+} // if (!function_exists ("IMS_Htmlfixer"))";}

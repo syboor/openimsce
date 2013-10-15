@@ -1,0 +1,28 @@
+a:3:{s:4:"name";s:13:"[[[hormenu]]]";s:3:"tag";s:7:"hormenu";s:12:"code_content";s:1295:"// Horizontal menu showing all root menu items
+
+// determine root menu items
+$root_id  = IMS_Root ($context["collection"], $context["site"], $context["page"]);
+$list = IMS_Children ($context["collection"], $context["site"], $root_id);
+
+// style sheet (font and color)
+//$content .= '<STYLE type="text/css">';
+//$content .= '<!--';
+//$content .= 'A.example_hormenu:link{color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold;}';
+//$content .= 'A.example_hormenu:visited{color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold;}';
+//$content .= 'A.example_hormenu:hover{color: #000000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: 12px;  font-weight: bold;}';
+//$content .= '-->';
+//$content .= '</STYLE>';  
+
+// generate menu
+if (is_array ($list)) {
+  $first = true;
+  foreach ($list as $id => $specs) {
+    if ($first) {
+      $first = false;
+    } else {
+      //$content .= ' <font color="#ffffff" size=3>|</font> ';
+    }
+    $content .= '<a class="example_hormenu" title="'.N_HtmlEntities($specs["longtitle"], false).'"href="'.$specs["url"].'">'.N_HtmlEntities($specs["shorttitle"], false).'</a>';
+  }
+}
+";}

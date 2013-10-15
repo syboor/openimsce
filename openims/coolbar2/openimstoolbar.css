@@ -1,0 +1,684 @@
+@charset "utf-8";
+#OpenIMSToolbarButton {
+		position:fixed;
+		top:8px;
+		left:4px;
+		z-index:19790626;
+		width:20px;
+		height:40px;
+		background:url(sprite.png) repeat-x left -10px;
+		padding:1px;
+		-moz-border-radius:3px;
+		border-radius:3px;
+}
+
+#OpenIMSToolbarButton a 
+{
+		display:block;
+		width:18px;
+		height:38px;
+		background:url(sprite.png) no-repeat center -1461px;
+		text-indent:-99999px;
+		-moz-border-radius:3px;
+		border-radius:3px;
+		border:1px solid #0081bf;
+}
+
+#OpenIMSToolbarButton a.active {background-position:center -2780px;}
+
+#OpenIMSToolbar 
+{
+	position:fixed;
+	top:0px;
+	width:100%;
+	height:66px;
+	min-height:66px;
+	background:url(sprite.png) repeat-x left top;
+	z-index:19710328;
+	overflow:visible;
+	display:block;
+	/* added by JG */
+	left:0px;
+
+	/* JG - copied form firebug computed tab */
+
+	font-family:serif;
+	font-size:16px;
+	font-weight:400;
+	font-style:normal;
+	font-size-adjust:none;
+	color:#000000;
+	text-transform:none;
+	text-decoration:none;
+	letter-spacing:normal;
+	word-spacing:0;
+	line-height:19px;
+	text-align:start;
+	vertical-align:baseline;
+	direction:ltr;
+	background-color:transparent;
+	background-repeat:repeat-x;
+	background-position:0 0;
+	background-attachment:scroll;
+	opacity	:1;
+
+	right:0;
+	margin:0;
+	padding:0;
+	border:0;
+	width:3000px;
+	box-shadow:none;
+	visibility:visible;
+	overflow-x:hidden;
+	overflow-y:hidden;
+	white-space:normal;
+	clip:auto;
+	float:none;
+	clear:none;
+	cursor:auto;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:disc;
+	marker-offset:auto;
+}
+
+#OpenIMSToolbar #OpenIMSToolbarContent 
+{
+	width:auto;
+	height:66px;
+	padding:0;
+	padding-left:32px;
+	color:#fff;
+	overflow:visible;
+	/* added by JG */
+	font-size:10px;
+
+	/* copied from firebug tab computed */
+	font-family:serif;
+	font-size:10px;
+	font-weight:400;
+	font-style:normal;
+	font-size-adjust:none;
+	color:#FFFFFF;
+	text-transform:none;
+	text-decoration:none;
+	letter-spacing:normal;
+	word-spacing:0;
+	line-height:19px;
+	text-align:start;
+	vertical-align:baseline;
+	direction:ltr;
+	background-color:transparent;
+	background-image:none;
+	background-repeat:repeat;
+	background-position:0 0;
+	background-attachment:scroll;
+	opacity:1;
+	top:auto;
+	right:auto;
+	bottom:auto;
+	left:auto;
+	margin:0;
+	border:0;
+	box-shadow:none;
+	position:static;
+	display:block;
+	visibility:visible;
+	z-index:auto;
+	overflow-x:visible;
+	overflow-y:visible;
+	white-space:normal;
+	clip:auto;
+	float:none;
+	clear:none;
+	
+	cursor:auto;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:disc;
+	marker-offset:auto;
+}
+
+#OpenIMSToolbarContent div
+{
+	font-family:"Lucida Grande","Lucida Sans",Arial,sans-serif;
+	font-size:9px;
+	font-weight:400;
+	font-style:normal;
+	font-size-adjust:none;
+	color:#FFFFFF;
+	text-transform:none;
+	text-decoration:none;
+	letter-spacing:normal;
+	word-spacing:0;
+	line-height:18px;
+	text-align:center;
+	vertical-align:baseline;
+	direction:ltr;
+
+	background-color:transparent;
+	background-image:none;
+	background-repeat:repeat;
+	background-position:0 0;
+	background-attachment:scroll;
+	opacity:1;
+
+	width:auto;
+	height:auto;
+	top:auto;
+	right:auto;
+	bottom:auto;
+	left:auto;
+	margin:0;
+	padding:0;
+	border:0;
+	border-style:none;
+	box-shadow:none;
+	min-width:0;
+	min-height:0;
+
+	position:static;
+	display:block;
+	visibility:visible;
+	z-index:auto;
+	overflow:visible;
+	white-space:normal;
+	clip:auto;
+	float:none;
+	clear:none;
+	
+	cursor:auto;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	marker-offset:auto;
+}
+
+#OpenIMSToolbarContent div.logo 
+{
+	float:left;
+	width:62px;
+	height:43px;
+	min-width:0;
+	min-height:0;
+	text-align:center;
+	line-height:18px;
+	padding-top:13px;
+}
+
+#OpenIMSToolbarContent div.logo img {
+	margin:0 auto;
+	width:100%;
+}
+
+#OpenIMSToolbarContent div.logo {} /* display:none;hide logo */
+#OpenIMSToolbarContent div.status 
+{
+	float:left;
+	width:140px;
+	height:56px;
+	min-width:0;
+	min-height:0;
+	text-align:center;
+	line-height:18px;
+}
+
+#OpenIMSToolbarContent div.status .doc-state 
+{
+	background:url(sprite.png) no-repeat center -79px;
+	margin:0 auto;
+	height:21px;
+}
+
+#OpenIMSToolbarContent div.status .doc-state-published
+{
+	background:url(sprite.png) no-repeat center -140px;
+	margin:0 auto;
+	height:21px;
+	color:black;
+}
+
+
+#OpenIMSToolbarContent div.status .action-author {
+	height:36px;
+}
+
+#OpenIMSToolbarContent div.status .action-author span 
+{
+	vertical-align:bottom;
+}
+
+ul.OpenIMSToolbarItems 
+{
+	float:left;
+	list-style:none;
+	height:56px;
+	font-family:"Lucida Grande", "Lucida Sans", Arial, sans-serif;
+	font-size:9px;
+	background:url(sprite.png) no-repeat left -200px;
+	/* added by JG */
+	margin:0;
+	padding:0;
+	/* end added by JG - firebug computed tab */
+	padding-left:4px;
+	margin-left:2px;
+
+	
+	font-weight:400;
+	font-style:normal;
+	font-size-adjust:none;
+	color:#FFFFFF;
+	text-transform:none;
+	text-decoration:none;
+	letter-spacing:normal;
+	word-spacing:0;
+	line-height:19px;
+	text-align:start;
+	vertical-align:baseline;
+	direction:ltr;
+	background-color:transparent;
+	background-repeat:no-repeat;
+	background-position:0 -200px;
+	background-attachment:scroll;
+	opacity:1;
+	
+	width:auto;
+	height:56px;
+	top:auto;
+	right:auto;
+	bottom:auto;
+	left:auto;
+
+	margin:0;
+	margin-left	2px
+	padding:0;
+	padding-left	4px
+	border:0;
+	border-left-style	none
+	box-shadow:none;
+	
+	position:static;
+	display:block;
+	visibility:visible;
+	z-index:auto;
+	overflow:visible;
+	white-space:normal;
+	clip:auto;
+	float:left;
+	clear:none;
+	
+	cursor:auto;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	marker-offset:auto;
+	*/
+}
+
+ul.OpenIMSToolbarItems li 
+{
+	float:left;
+	height:56px;
+	min-width:44px;
+	padding:0;
+
+	font-family:"Lucida Grande","Lucida Sans",Arial,sans-serif;
+	font-size:9px;
+	font-weight:400;
+	font-style:normal;
+	font-size-adjust:none;
+	color:#FFFFFF;
+	text-transform:none;
+	text-decoration:none;
+	letter-spacing:normal;
+	word-spacing:0;
+	line-height:19px;
+	text-align:start;
+	vertical-align:baseline;
+	direction:ltr;
+	
+	background-color:transparent;
+	background-image:none;
+	background-repeat:repeat;
+	background-position:0 0;
+	background-attachment:scroll;
+	opacity:1;
+	
+	width:auto;
+	height:56px;
+	top:auto;
+	right:auto;
+	bottom:auto;
+	left:auto;
+	margin:0;
+	padding:0;
+	border:0;
+	box-shadow:none;
+	
+	position:static;
+	display:list-item;
+	visibility:visible;
+	z-index:auto;
+	overflow-x:visible;
+	overflow-y:visible;
+	white-space:normal;
+	clip:auto;
+	float:left;
+	clear:none;
+	
+	cursor:auto;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	marker-offset:auto;
+
+}
+
+ul.OpenIMSToolbarItems li a 
+{
+	display:block;
+	height:20px;
+	padding:36px 2px 0 2px;
+	color:#fff !important;
+	text-decoration:none !important;
+	background:url(sprite.png) no-repeat center top;
+	text-align:center;
+	/* added by JG - copied from firebug computed tab */
+	font-family:"Lucida Grande","Lucida Sans",Arial,sans-serif;
+	font-size:10.8px;
+	font-weight:400;
+	font-style:normal;
+	font-size-adjust:none;
+	color:#FFFFFF;
+	text-transform:none;
+	text-decoration:none;
+	letter-spacing:normal;
+	word-spacing:0;
+	line-height:19px;
+	text-align:center;
+	vertical-align:baseline;
+	direction:ltr;
+
+	background-color:transparent;
+	background-repeat:no-repeat;
+	background-position:50% -1760px;
+	background-attachment:scroll;
+	opacity:1;
+
+	width:auto;/*40px;*/
+	height:20px;
+	top:auto;
+	right:auto;
+	bottom:auto;
+	left:auto;
+	margin:0;
+	padding-top:36px;
+	padding-right:2px;
+	padding-bottom:0;
+	padding-left:2px;
+	border:0;
+	box-shadow:none;
+
+	position:static;
+	display:block;
+	visibility:visible;
+	z-index:auto;
+	overflow:visible;
+	white-space:normal;
+	clip:auto;
+	float:none;
+	clear:none;
+
+	cursor:pointer;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	marker-offset:auto;
+}
+
+ul.OpenIMSToolbarItems li.edit a img
+{
+	font-family:"Lucida Grande","Lucida Sans",Arial,sans-serif;
+	font-size:10.8px;
+	font-weight:400;
+	font-style:normal;
+	ont-size-adjust:none;
+	olor:#FFFFFF;
+	ext-transform:none;
+	ext-decoration:none;
+	etter-spacing:normal;
+	ord-spacing:0;
+	ine-height:19px;
+	text-align:center;
+	vertical-align:baseline;
+	direction:ltr;
+
+	background-color:transparent;
+	background-image:none;
+	background-repeat:repeat;
+	background-position:0 0;
+	background-attachment:scroll;
+	opacity:1;
+
+	width:21px;
+	height:14px;
+	top:26px;
+	right:auto;
+	bottom:auto;
+	left:auto;
+	margin:0;
+	padding:0;
+	border:0;
+	box-shadow:none;
+	min-width:0;
+	min-height:0;
+
+	position:absolute;
+	display:block;
+	visibility:visible;
+	z-index:-1;
+	overflow:visible;
+	white-space:normal;
+	clip:auto;
+	float:none;
+	clear:none;
+
+	cursor:pointer;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	marker-offset:auto;
+}
+
+ul.OpenIMSToolbarItems li a span
+{
+	font-family:"Lucida Grande","Lucida Sans",Arial,sans-serif;
+	font-size:10.8px;
+	font-weight:400;
+	font-style:normal;
+	font-size-adjust:none;
+	color:#9BDFFF;
+	text-transform:none;
+	text-decoration:none;
+	letter-spacing:normal;
+	word-spacing:0;
+	line-height:19px;
+	text-align:center;
+	vertical-align:baseline;
+	direction:ltr;
+
+	background-color:transparent;
+	background-image:none;
+	background-repeat:repeat;
+	background-position:0 0;
+	background-attachment:scroll;
+	opacity:1;
+
+	width:auto;
+	height:auto;
+	top:auto;
+	right:auto;
+	bottom:auto;
+	left:auto;
+	margin:0;
+	padding:0;
+	border:0;
+	box-shadow:none;
+	min-width:0;
+	min-height:0;
+
+	position:static;
+	display:inline;
+	visibility:visible;
+	z-index:auto;
+	overflow:visible;
+	white-space:nowrap;
+	clip:auto;
+	float:none;
+	clear:none;
+
+	cursor:pointer;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	marker-offset:auto;
+}
+
+ul.OpenIMSToolbarItems li a:hover {color:#fff !important;text-decoration:none !important;}
+ul.OpenIMSToolbarItems li a span {span:1px;}
+ul.OpenIMSToolbarItems li a:hover span {color:#9bdfff !important;text-decoration:none !important;background:none;}
+
+ul.OpenIMSToolbarItems li.site a {background-position:center -258px;}
+ul.OpenIMSToolbarItems li.site a:hover {background-position:center -318px;}
+ul.OpenIMSToolbarItems li.cms a {background-position:center -380px;}
+ul.OpenIMSToolbarItems li.cms a:hover {background-position:center -440px;}
+ul.OpenIMSToolbarItems li.refresh a {background-position:center -500px;}
+ul.OpenIMSToolbarItems li.refresh a:hover {background-position:center -560px;}
+ul.OpenIMSToolbarItems li.edit a {background-position:center -620px;}
+ul.OpenIMSToolbarItems li.edit a:hover {background-position:center -680px;}
+ul.OpenIMSToolbarItems li.properties a {background-position:center -980px;}
+ul.OpenIMSToolbarItems li.properties a:hover {background-position:center -1040px;}
+ul.OpenIMSToolbarItems li.publish a {background-position:center -1100px;}
+ul.OpenIMSToolbarItems li.publish a:hover {background-position:center -1160px;}
+ul.OpenIMSToolbarItems li.discard a {background-position:center -1220px;}
+ul.OpenIMSToolbarItems li.discard a:hover {background-position:center -1280px;}
+ul.OpenIMSToolbarItems li.undo a {background-position:center -1580px;}
+ul.OpenIMSToolbarItems li.undo a:hover {background-position:center -1640px;}
+ul.OpenIMSToolbarItems li.history a {background-position:center -1700px;}
+ul.OpenIMSToolbarItems li.history a:hover {background-position:center -1760px;}
+ul.OpenIMSToolbarItems li.new a {background-position:center -1940px;}
+ul.OpenIMSToolbarItems li.new a:hover {background-position:center -2000px;}
+ul.OpenIMSToolbarItems li.move a {background-position:center -2060px;}
+ul.OpenIMSToolbarItems li.move a:hover {background-position:center -2120px;}
+ul.OpenIMSToolbarItems li.dev a {background-position:center -2300px;}
+ul.OpenIMSToolbarItems li.dev a:hover {background-position:center -2360px;}
+ul.OpenIMSToolbarItems li.help a {background-position:center -2420px;}
+ul.OpenIMSToolbarItems li.help a:hover {background-position:center -2480px;}
+
+/* extra items */
+ul.OpenIMSToolbarItems li.empty a {background-position:center -1820px;}
+ul.OpenIMSToolbarItems li.empty a:hover {background-position:center -1880px;}
+ul.OpenIMSToolbarItems li.cancel a {background-position:center -1340px;}
+ul.OpenIMSToolbarItems li.cancel a:hover {background-position:center -1400px;}
+ul.OpenIMSToolbarItems li.move2 a {background-position:center -2180px;}
+ul.OpenIMSToolbarItems li.move2 a:hover {background-position:center -2240px;}
+
+ul.OpenIMSToolbarItems li.stop a {background-position:center -2540px;}
+ul.OpenIMSToolbarItems li.stop a:hover {background-position:center -2600px;}
+ul.OpenIMSToolbarItems li.star a {background-position:center -2660px;}
+ul.OpenIMSToolbarItems li.star a:hover {background-position:center -2720px;}
+ul.OpenIMSToolbarItems li.save a {background-position:center -2840px;}
+ul.OpenIMSToolbarItems li.save a:hover {background-position:center -2900px;}
+ul.OpenIMSToolbarItems li.halt a {background-position:center -2960px;}
+ul.OpenIMSToolbarItems li.halt a:hover {background-position:center -3020px;}
+
+ul.OpenIMSToolbarItems li.docup a {background-position:center -3080px;}
+ul.OpenIMSToolbarItems li.docup a:hover {background-position:center -3140px;}
+ul.OpenIMSToolbarItems li.docdown a {background-position:center -3200px;}
+ul.OpenIMSToolbarItems li.docdown a:hover {background-position:center -3260px;}
+ul.OpenIMSToolbarItems li.up a {background-position:center -3320px;}
+ul.OpenIMSToolbarItems li.up a:hover {background-position:center -3380px;}
+ul.OpenIMSToolbarItems li.down a {background-position:center -3440px;}
+ul.OpenIMSToolbarItems li.down a:hover {background-position:center -3500px;}
+
+ul.OpenIMSToolbarItems li.pin a {background-position:center -3560px;}
+ul.OpenIMSToolbarItems li.pin a:hover {background-position:center -3620px;}
+ul.OpenIMSToolbarItems li.docpin a {background-position:center -3680px;}
+ul.OpenIMSToolbarItems li.docpin a:hover {background-position:center -3740px;}
+
+ul.OpenIMSToolbarItems li.workflow a {background-position:center -3800px;}
+ul.OpenIMSToolbarItems li.workflow a:hover {background-position:center -3860px;}
+ul.OpenIMSToolbarItems li.work a {background-position:center -3920px;}
+ul.OpenIMSToolbarItems li.work a:hover {background-position:center -3980px;}
+ul.OpenIMSToolbarItems li.flow a {background-position:center -4040px;}
+ul.OpenIMSToolbarItems li.flow a:hover {background-position:center -4100px;}
+
+/* language items */
+ul.OpenIMSToolbarItems li.lang {}
+ul.OpenIMSToolbarItems li.lang ul.LangList {list-style:none;}
+ul.OpenIMSToolbarItems li.lang ul.LangList li {width:40px;height:26px;float:none;padding:0px;}
+ul.OpenIMSToolbarItems li.lang ul.LangList li a {width:30px;height:16px;padding:6px 4px 0px 6px;background:none;}
+ul.OpenIMSToolbarItems li.lang ul.LangList li a span {display:block;text-indent:-99999px;}
+ul.OpenIMSToolbarItems li.lang ul.LangList li a span {display:block;text-indent:-99999px;background-repeat:no-repeat;background-position:left -1525px;}
+ul.OpenIMSToolbarItems li.lang ul.LangList li.nl-nl a span {background-position:left -1525px;}
+ul.OpenIMSToolbarItems li.lang ul.LangList li.en-uk a span {background-position:-30px -1525px;}
+
+ul.OpenIMSToolbarItems li.lang 
+{
+/*	width:0;min-width:0;*/
+}
+
+ul.OpenIMSToolbarItems li.lang ul.LangList 
+{
+		list-style:none;
+		/* added by jg */
+		margin:0;
+		padding:0;
+		position:absolute;
+}
+
+ul.OpenIMSToolbarItems li.lang ul.LangList li {
+/*	width:26px;*/
+	height:26px;
+	min-width:0;
+	min-height:0;
+/*	float:left;*/
+	float:none;
+	width:40px;
+	padding:0px;
+}
+
+ul.OpenIMSToolbarItems li.lang ul.LangList li a {
+	width:30px;	
+	min-width:0;
+	height:16px;
+	min-heigth:0;
+	padding:6px 4px 0px 6px;
+	background:none;
+}
+
+ul.OpenIMSToolbarItems li.lang ul.LangList li a span {display:block;text-indent:-99999px;}
+ul.OpenIMSToolbarItems li.lang ul.LangList li a span {display:block;text-indent:-99999px;background:url(sprite.png) no-repeat left -1525px;}
+ul.OpenIMSToolbarItems li.lang ul.LangList li.nl-nl a span {background-position:left -1525px;}
+ul.OpenIMSToolbarItems li.lang ul.LangList li.en-en a span {background-position:-30px -1525px;}
+
+
+.iconsonly ul.OpenIMSToolbarItems {}
+.iconsonly ul.OpenIMSToolbarItems li {float:left;height:52px;min-width:42px;padding-top:4px;}
+.iconsonly ul.OpenIMSToolbarItems li a {height:20px;padding:32px 2px 0 2px;}
+.iconsonly ul.OpenIMSToolbarItems li a span {display:none;}
+.iconsonly ul.OpenIMSToolbarItems li.lang ul.LangList li a {padding:2px 4px 0px 6px;}
+
+/*
+div
+{
+	padding:50px;
+}
+*/
+
+/* todo
+- use sprite.gif for ie6's non transparant f*cks
+*/
+* html #OpenIMSToolbarButton {position:absolute;}
+* html #OpenIMSToolbar {position:absolute;}
+* html ul.OpenIMSToolbarItems li {width:48px;}

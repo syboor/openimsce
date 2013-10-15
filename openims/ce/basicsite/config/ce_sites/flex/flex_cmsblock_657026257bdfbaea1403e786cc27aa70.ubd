@@ -1,0 +1,98 @@
+a:3:{s:4:"name";s:12:"[[[search]]]";s:3:"tag";s:6:"search";s:12:"code_content";s:4684:"// Search engine
+
+uuse("search");
+
+// parameters
+global $q, $from, $to;
+$q = stripslashes(N_UTF2HTML($q));
+$from = intval($from);
+$to = intval($to);
+
+// font and color
+$content .= '
+  <font face="Arial, Helvetica" size="2">
+  <STYLE type="text/css"><!--
+    A.example_searchlink:link{color: #000000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: 12px;}
+    A.example_searchlink:visited{color: #000000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: 12px;}
+    A.example_searchlink:hover{color: #FF0000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: 12px;}
+    A.example_navilink:link{color: #000000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: 12px;}
+    A.example_navilink:visited{color: #000000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: 12px;}
+    A.example_navilink:hover{color: #FF0000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: 12px;}
+  --></STYLE>
+';
+
+// interface
+$content .= '
+  <table border="0" cellspacing="0" cellpadding="0">
+    <form action="'.N_MyBareURL().'" method="put" accept-charset="utf-8">
+      <tr><td>
+        <input type="text" name="q" size="30" value="'.N_HtmlEntities($q).'"><br>
+      </td><td>
+        &nbsp;
+      </td><td>
+        <input type="submit" style="font-weight:bold" value="'.ML("Zoeken","Search").'">
+      </td></tr>
+    <input type="hidden" name="enforceutf8" value="&#00307;"></form>
+  </table>
+  <script>
+  <!--
+    document.forms[0].elements[0].focus();
+  // -->
+  </script>
+';
+
+// search and show results
+$words = split (" ", SEARCH_REMOVEACCENTS(strtolower ($q)));
+$count = count ($words);
+if (!$from) $from = 1;
+if ($from < 0) $from = 1;
+if (!$to) $to = $from+9;
+if ($q) {
+  $result = SEARCH ($context["collection"]."#".$context["site"], $q);
+  $list = $result["ignore"];
+  if ($list) {
+    $content .= "<br>Niet meegenomen met zoeken: ";
+    reset($list);
+    while (list($word)=each($list)) {
+      $content .= $word." ";
+    }
+    $content .= "<br>";
+  }
+  $amount = $result["amount"];
+  if ($amount) {
+    if ($to > $amount) $to = $amount;
+    $content .= "<br><b>".ML("Resultaten","Results")." $from - $to ".ML("van","from")." $amount.</b>&nbsp;&nbsp;&nbsp;";
+    if ($from!=1) $content .= "<a class=\"example_navilink\" href=\"".N_MyBareURL()."?q=".urlencode($q)."&from=".($from-10)."\"><bb>&lt;&lt; ".ML("Vorige","Previous")."</b></a>&nbsp;";
+    if ($to!=$amount) $content .= "<a class=\"example_navilink\" href=\"".N_MyBareURL()."?q=".urlencode($q)."&from=".($from+10)."\"><b>".ML("Volgende","Next")." &gt;&gt;</b></a>";
+    $content .= "<br><br>";
+    $r = $result["result"];
+    reset($r);
+    while (list($object_id ,$res)=each($r)) {
+      $ctr++;   
+      if ($ctr>=$from && $ctr<=$to) {
+        $object = &IMS_AccessObject ($context["collection"], $object_id);        
+        $content .= "<a class=\"example_searchlink\" href=\"/".$context["site"]."/$object_id.php\">";
+        $title = " ".N_HtmlEntities($object["parameters"]["published"]["longtitle"])." ";    
+        for ($i=0; $i<$count; $i++) {
+          if (trim($words[$i])) {
+            $title = preg_replace ("/([^<>a-zA-Z0-9])*(".preg_quote($words[$i], "/").")([^<>a-zA-Z0-9])*/i", "\\1"."<b>"."\\2"."</b>"."\\3", $title);
+          }
+        }        
+        $title = trim ($title);
+        $content .= "$title</a> ";
+        $content .= "<a title=\"".ML("Toon pagina en markeer zoektermen","Show page and mark results")."\"class=\"example_navilink\" href=\"/".$context["site"]."/$object_id.php?mark=".urlencode($q)."\">";
+        $content .= "<img border=0 src=\"/openims/mark.gif\">";
+        $content .= "</a>";
+        $content .= "<br>";
+        $content .= $res["sumary"]."<br><br>";
+      }
+    }
+  } else {
+    $content .= "<br><b>".ML("Uw zoekopdracht heeft geen documenten opgeleverd","Your search did not find any results").".</b><br><br>";
+    $content .= ML("Suggesties","Sugestions").":<br>";
+    $content .= "&nbsp;&nbsp;&nbsp;&nbsp;- ".ML("Zorg ervoor dat alle zoektermen goed gespeld zijn","Make sure all search terms have proper spelling").".<br>";
+    $content .= "&nbsp;&nbsp;&nbsp;&nbsp;- ".ML("Probeer andere zoektermen","Try other search terms").".<br>";
+    $content .= "&nbsp;&nbsp;&nbsp;&nbsp;- ".ML("Maak de zoektermen algemener","Use more generic search terms").".<br>";
+    if ($count>1) $content .= "&nbsp;&nbsp;&nbsp;&nbsp;- ".ML("Gebruik minder zoektermen","Use less search terms").".<br>";
+  }
+}";}

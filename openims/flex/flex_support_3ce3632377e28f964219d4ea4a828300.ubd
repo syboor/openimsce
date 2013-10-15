@@ -1,0 +1,10 @@
+a:2:{s:4:"name";s:33:"HTML content filter (MS-Word VML)";s:4:"code";s:337:"if (!function_exists ("IMS_HtmlContentFilter")) { // prevent multiple filter definitions
+
+function IMS_HtmlContentFilter ($content)
+{
+  $content = str_replace (" vml ", " ignorevml ", $content);
+  $content = str_replace ("!vml", "!ignorevml", $content);
+  return $content;
+}
+
+} // if (!function_exists ("IMS_HtmlContentFilter"))";}

@@ -1,0 +1,233 @@
+a:2:{s:4:"name";s:26:"SKIN management (portlets)";s:4:"code";s:12777:"if (!function_exists ("SKIN_BgColor")) { // prevent multiple skin definitions
+
+function SKIN_BgColor()
+{
+  return "ECF4FE";
+}
+
+function SKIN_Background()
+{
+  return "/openims/background_005.gif";
+}
+
+function SKIN_Bottom_Background()
+{
+  return "";
+}
+
+function SKIN_Bottom_BgColor()
+{
+  return "FFFFFF";
+}
+
+function SKIN_Top_Background()
+{
+  return "";
+}
+
+function SKIN_Top_BgColor()
+{
+  return "FFFFFF";
+}
+
+function SKIN_ExtraButtons()
+{
+  return "";
+}
+
+function SKIN_HorizontalSeparator()
+{
+  return "/openims/bottom.gif";
+}
+
+function SKIN_PorletTableNav ($specs)
+{    
+  $tableparams["table-props"]   = $specs["extra-table-props"].' cellpadding="3" cellspacing="0" STYLE="border: solid #0863C6 1px; border-collapse:collapse;"';
+  $tableparams["td-head-props"] = 'align="'.$specs["td-head-align"].'" STYLE="border: solid #0863C6 1px; background-color: #0863C6;" bgcolor="0863C6" background="/openims/tile_back.gif"';
+  $tableparams["td-std-props"]  = 'align="'.$specs["td-std-align"].'" STYLE="border: solid #0863C6 1px; background-color: #FFFFFF;"';
+  $tableparams["td-head-init"]  = '<font color="#ffffff" face="arial,helvetica" size="2"><b>';
+  $tableparams["td-head-exit"]  = '</b></font>';
+  $tableparams["td-std-init"]   = '<table width="100%" cellpadding="0" cellspacing="0"><tr><td width="1">&nbsp;</td><td align="'.$specs["td-std-align"].'"><font style="font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;">';
+  $tableparams["td-std-exit"]   = '</font></td></tr></table>';
+  $tableparams["td-sortlink-style"] = '
+    <STYLE type="text/css"><!--
+      A.###:link{color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;}
+      A.###:visited{color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;}
+      A.###:hover{color: #FF0000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;}
+    --></STYLE>
+  ';
+  return $tableparams;
+}
+
+function SKIN_PorletTableDocnav ($specs)
+{    
+  //******  standaard CMS
+  if (strpos (N_MyFullURL(), "openims.php")) { 
+  $tableparams["table-props"]   = $specs["extra-table-props"].' cellpadding="3" cellspacing="0" STYLE="border: solid #0863C6 1px; border-collapse:collapse;"';
+  $tableparams["td-std-props"]  = 'align="'.$specs["td-std-align"].'" STYLE="border: solid #0863C6 1px; background-color: #FFFFFF;"';
+  $tableparams["td-std-init"]   = '<table width="100%" cellpadding="0" cellspacing="0"><tr><td width="1">&nbsp;</td><td align="'.$specs["td-std-align"].'"><font style="font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;">';
+  $tableparams["td-head-props"] = 'align="'.$specs["td-head-align"].'" STYLE="border: solid #0863C6 1px; background-color: #0863C6;" bgcolor="0863C6" background="/openims/tile_back.gif"';
+
+
+
+  //***** portaal portlets
+  } else {
+     $tableparams["table-props"]   = $specs["extra-table-props"].' cellpadding="0" cellspacing="0" STYLE="border: solid #0863C6 0px; border-collapse:collapse; "';
+     $tableparams["td-std-props"]  = 'align="'.$specs["td-std-align"].'" STYLE="border: solid #0863C6 0px; background-color: #FFFFFF;"';
+     $tableparams["td-std-init"]   = '<table width="100%" cellpadding="8" cellspacing="0" STYLE="border: solid #0863C6 1px;"><tr><td align="'.$specs["td-std-align"].'"><font style="font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;">';
+     $tableparams["td-head-props"] = 'align="'.$specs["td-head-align"].'" STYLE="border: solid #0863C6 0px; background-color: #0863C6 ;" bgcolor="white" background= "/openims/ps_bg_middle.gif"';
+  }
+
+
+  $tableparams["td-head-init"]  = '<font color="#ffffff" style="font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;"><b>';
+  $tableparams["td-head-exit"]  = '</b></font>';
+  $tableparams["td-std-exit"]   = '</font></td></tr></table>';
+  $tableparams["td-sortlink-style"] = '
+    <STYLE type="text/css"><!--
+      A.###:link{color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;}
+      A.###:visited{color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;}
+      A.###:hover{color: #FF0000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;}
+    --></STYLE>
+  ';
+  return $tableparams;
+}
+
+function SKIN_PorletTableAction ($specs)
+{    
+  $tableparams["table-props"]   = $specs["extra-table-props"].' cellpadding="3" cellspacing="0" STYLE="border: solid #0863C6 1px; border-collapse:collapse;"';
+  $tableparams["td-head-props"] = 'align="'.$specs["td-head-align"].'" STYLE="border: solid #0863C6 1px; background-color: #0863C6;" bgcolor="0863C6" background="/openims/tile_back.gif"';
+  $tableparams["td-std-props"]  = 'align="'.$specs["td-std-align"].'" STYLE="border: solid #0863C6 1px; background-color: #FFFFFF;"';
+  $tableparams["td-head-init"]  = '<font color="#ffffff" style="font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;"><b>';
+  $tableparams["td-head-exit"]  = '</b></font>';
+  $tableparams["td-std-init"]   = '<table width="100%" cellpadding="0" cellspacing="0"><tr><td width="1">&nbsp;</td><td align="'.$specs["td-std-align"].'"><font style="font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;">';
+  $tableparams["td-std-exit"]   = '</font></td></tr></table>';
+  $tableparams["td-sortlink-style"] = '
+    <STYLE type="text/css"><!--
+      A.###:link{color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;}
+      A.###:visited{color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;}
+      A.###:hover{color: #FF0000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;}
+    --></STYLE>
+  ';
+  return $tableparams;
+}
+
+function SKIN_ContentTable ($specs)
+{
+  $tableparams["table-props"]   = $specs["extra-table-props"].' cellpadding="3" cellspacing="0" STYLE="border: solid #D0D0D0 1px; border-collapse:collapse;"';
+  $tableparams["td-head-props"] = 'align="'.$specs["td-head-align"].'" STYLE="border: solid #D0D0D0 1px;"';
+  $tableparams["td-std-props"]  = 'valign="top" align="'.$specs["td-std-align"].'" STYLE="border: solid #D0D0D0 1px;"';
+  $tableparams["td-head-init"]  = '<font style="font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;"><b>';
+  $tableparams["td-head-exit"]  = '</b></font>';
+  $tableparams["td-std-init"]   = '<font style="font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;">';
+  $tableparams["td-std-exit"]   = '</font>';
+  $tableparams["td-sortlink-style"] = '
+    <STYLE type="text/css"><!--
+      A.###:link{color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;}
+      A.###:visited{color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;}
+      A.###:hover{color: #FF0000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$specs["fontsize"].'px;}
+    --></STYLE>
+  ';
+  return $tableparams;
+}
+
+function SKIN_CSS ()
+{
+  $fontsize = "12";
+
+  $css .= '<STYLE type="text/css">';
+  $css .= '<!--';
+
+  // menu's, buttons, folders, actions
+  $css .= 'A.ims_navigation:link{color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.ims_navigation:visited{color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.ims_navigation:hover{color: #FF0000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+
+  // special coolbar styles
+  $css .= '.ims_image { display: inline; }';
+  $css .= '.ims_td { margin: 3px; padding:3px; }';
+  $css .= '.ims_text1 {color: #FF0000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight:bold;}';
+  $css .= '.ims_text2 {color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; }';
+  $css .= '.ims_text3 {color: #000000; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 10px;}';
+ 
+
+  // portlet heading hyperlinks
+  $css .= 'A.ims_headnav:link{color: #FFFFFF; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.ims_headnav:visited{color: #FFFFFF; text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.ims_headnav:hover{color: #FFFFFF; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+
+  // active navigation item
+  $css .= 'A.ims_active:link{color: #FF0000; text-decoration: none; font-weight: bold; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.ims_active:visited{color: #FF0000; text-decoration: none; font-weight: bold; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.ims_active:hover{color: #FF0000; text-decoration: underline; font-weight: bold; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+
+  // embedded links (e.g. process editor, search navigation)
+  $css .= 'A.ims_link:link{color: #000366; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.ims_link:visited{color: #000366; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.ims_link:hover{color: #FF0000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.treelink:link{color: #000366; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.treelink:visited{color: #000366; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.treelink:hover{color: #FF0000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+
+  if (strpos (N_MyFullURL(), "openims.php")) {
+    $css .= 'A:link{color: #000366; text-decoration: underline; font-family: Arial, Helvetica, sans-serif;}';
+    $css .= 'A:visited{color: #000366; text-decoration: underline; font-family: Arial, Helvetica, sans-serif;}';
+    $css .= 'A:hover{color: #FF0000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif;}';
+  }
+
+  // result links
+  $css .= 'A.ims_result:link{color: #000366; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: 16px;}';
+  $css .= 'A.ims_result:visited{color: #551A8B; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: 16px;}';
+  $css .= 'A.ims_result:hover{color: #FF0000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: 16px;}';
+
+  // news links
+  $css .= 'A.ims_news:link{color: #000366; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.ims_news:visited{color: #606060; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+  $css .= 'A.ims_news:hover{color: #FF0000; text-decoration: underline; font-family: Arial, Helvetica, sans-serif; font-size: '.$fontsize.'px;}';
+
+  $css .= '-->';
+  $css .= '</STYLE>';
+  return $css;
+}
+
+
+
+function SKIN_LeftPortletHeaderImage() {
+  return '<img src="/openims/ps_bg_left.gif" border="0">';
+}
+
+function SKIN_RightPortletHeaderImage() {
+  return '<img src="/openims/ps_bg_right.gif" border="0">';
+}
+
+function SKIN_PortalButton_Edit() {
+  return "/openims/ps_b_settings.gif";
+}
+
+function SKIN_PortalButton_Delete() {
+  return "/openims/ps_bcl0se.gif";
+}
+
+
+function SKIN_PortalButton_Up() {
+  return "/openims/ps_b_up.gif";
+}
+
+function SKIN_PortalButton_Down() {
+  return "/openims/ps_b_down.gif";
+}
+
+function SKIN_PortalButton_Left() {
+  return "/openims/ps_b_left.gif";
+}
+
+function SKIN_PortalButton_Right() {
+  return "/openims/ps_b_right.gif";
+}
+
+function SKIN_PortalBackground() {
+  return "";
+
+}
+
+
+} // if (!function_exists ("SKIN_BgColor"))";}

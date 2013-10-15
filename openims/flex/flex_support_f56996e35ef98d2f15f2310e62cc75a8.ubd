@@ -1,0 +1,18 @@
+a:2:{s:4:"name";s:27:"DMS special files (default)";s:4:"code";s:371:"if (!function_exists ("FILES_SpecialCompare")) { // prevent multiple definitions
+
+function FILES_SpecialCompare ($supergroupname, $object_id, $v1="dummy1", $v2="dummy2")
+{
+  return array();
+}
+
+function FILES_SpecialEdit ($supergroupname, $object_id)
+{
+  return array();
+}
+
+function FILES_SpecialView ($supergroupname, $object_id)
+{
+  return array();
+}
+
+}";}

@@ -1,0 +1,57 @@
+//ericd 310811
+iBrowser aangepast voor JQuery versie van TinyMCE, daarvoor de laatste versie van Ibrowser gebruikt (v 1.4.1)
+
+openims\libs\tinymcejquery\jscripts\tiny_mce\plugins\ibrowser\editor_plugin.js
+onderstaande regels toegevoegd  (17 and 18), zodat de iBrowser plugin kan opstarten als je op het iocoon klikt.
+tinymce.ScriptLoader.add(url + '/interface/common.js');			
+tinymce.ScriptLoader.loadQueue();
+
+openims\libs\tinymcejquery\jscripts\tiny_mce\plugins\ibrowser\interface\common.js
+verder bleek ook \interface\common.js te zijn aangepast in originele iBrowser voor JS TinyMCE, voor wbt. de url
++ '?img_path=' + image_dir + '&taal=' + taal (lines 87 en 91)
+
+openims\libs\tinymcejquery\jscripts\tiny_mce\plugins\ibrowser\ibrowser.php
+alle aanpassingen uit de originele ibrowser.php overgezet naar de nieuwe. 
+
+Verder ook onderstaande originele aanpassingen overgezet (aangepast: url nu naar tinymcejquery...).
+
+
+
+CSS style
+--------------
+openims\libs\tinymcejquery\jscripts\tiny_mce\plugins\ibrowser\css\style.css
+
+(Div's margin's aangepast, naar links opschuiven)
+
+
+Script voor laden message
+--------------
+openims\libs\tinymcejquery\jscripts\tiny_mce\plugins\ibrowser\scripts\loadmsg.php
+
+(div helemaal verwijderd)
+
+
+Hoofdbestand
+--------------
+openims\libs\tinymcejquery\jscripts\tiny_mce\plugins\ibrowser\ibrowser.php
+
+(verwijder en hernoem knop verwijderd, menu en welkom divs verborgen) 
+
+PHPthumb
+--------
+openims\libs\tinymcejquery\jscripts\tiny_mce\plugins\ibrowser\scripts\phpThumb\phpThumb.config.php
+(uitschakelen van debugging info)
+
+openims\libs\tinymcejquery\jscripts\tiny_mce\plugins\ibrowser\scripts\phpThumb\phpthumb.class.php
+(uitschakelen Image Magick ivm gebrek aan escaping bij samenstelling command line)
+
+openims\libs\tinymcejquery\jscripts\tiny_mce\plugins\ibrowser\scripts\phpThumb\phpThumb.php
+(uitschakelen E_DEPRECATED ivm PHP 5.3)
+
+Overig  
+------  
+jscripts\tiny_mce\plugins\ibrowser\interface\common.js  
+(doorgeven server side encoded settings)  
+ 
+jscripts\tiny_mce\plugins\ibrowser\scripts\rfiles.js  
+(security)

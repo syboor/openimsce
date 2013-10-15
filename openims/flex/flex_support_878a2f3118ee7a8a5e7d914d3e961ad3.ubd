@@ -1,0 +1,8 @@
+a:2:{s:4:"name";s:29:"HTML content filter (default)";s:4:"code";s:215:"if (!function_exists ("IMS_HtmlContentFilter")) { // prevent multiple filter definitions
+
+function IMS_HtmlContentFilter ($content)
+{
+  return $content;
+}
+
+} // if (!function_exists ("IMS_HtmlContentFilter"))";}

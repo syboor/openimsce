@@ -1,0 +1,8 @@
+a:2:{s:4:"name";s:30:"IMS_CustomIdForNewPage_Default";s:4:"code";s:202:"if (!function_exists ("IMS_CustomIdForNewPage_Default")) { // prevent multiple definitions
+
+function IMS_CustomIdForNewPage_Default($sgn, $objectid){ // $objectid is current page
+
+return '';
+}
+
+}";}

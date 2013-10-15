@@ -1,0 +1,17 @@
+a:2:{s:4:"name";s:23:"Assignable Users Filter";s:4:"code";s:472:"// Specify extra restrictions for the "Allocate to" / "Toewijzen aan" field in DMS or BPMS.
+
+if (!function_exists("SHIELD_AssignableUsers_Extra")) {
+
+  function SHIELD_AssignableUsers_Extra ($users, $supergroupname, $object_id, $option) {
+    return $users;
+  }
+
+}
+
+if (!function_exists("SHIELD_AssignableUsersBPMS_Extra")) {
+
+  function SHIELD_AssignableUsersBPMS_Extra ($users, $supergroupname, $case_id, $option, $process_id) {
+    return $users;
+  }
+}
+";}

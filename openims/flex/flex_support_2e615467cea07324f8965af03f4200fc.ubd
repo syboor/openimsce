@@ -1,0 +1,100 @@
+a:2:{s:4:"name";s:23:"DMS special files (CAD)";s:4:"code";s:3761:"if (!function_exists ("FILES_SpecialCompare")) { // prevent multiple definitions
+
+function FILES_SpecialCompare ($supergroupname, $object_id, $v1="dummy1", $v2="dummy2")
+{
+  $dir1 = "\\".$supergroupname."\\objects\\history\\".$object_id."\\".$v1."\\";
+  $dir2 = "\\".$supergroupname."\\objects\\history\\".$object_id."\\".$v2."\\";
+  $doc = FILES_TrueFileName ($supergroupname, $object_id);
+
+  $result = array();
+  $thedoctype = FILES_FileType ($supergroupname, $object_id);
+  if ($thedoctype=="dwg" || $thedoctype=="dgn") {
+    $result["Cyco AutoManager View"] = IMS_GenerateAdvancedTransferURL (array (
+      "1_command" => "download",
+      "1_dir" => $dir1,
+      "1_file" => $doc,
+      "1_subs" => "true",
+
+      "2_command" => "download",
+      "2_dir" => $dir2,
+      "2_file" => $doc,
+      "2_subs" => "true",
+
+      "3_command" => "compare",
+      "3_executable" => "amview32.exe",
+      "3_dir1" => $dir1,
+      "3_file1" => $doc,
+      "3_dir2" => $dir2,
+      "3_file2" => $doc,
+    ));
+    $result["AutoVue Professional"] = IMS_GenerateAdvancedTransferURL (array (
+      "1_command" => "download",
+      "1_dir" => $dir1,
+      "1_file" => $doc,
+      "1_subs" => "true",
+
+      "2_command" => "download",
+      "2_dir" => $dir2,
+      "2_file" => $doc,
+      "2_subs" => "true",
+
+      "3_command" => "compare",
+      "3_executable" => "avwin.exe",
+      "3_dir1" => $dir1,
+      "3_file1" => $doc,
+      "3_dir2" => $dir2,
+      "3_file2" => $doc,
+    ));
+    $result["Myriad Engineering Viewer"] = IMS_GenerateAdvancedTransferURL (array (
+      "1_command" => "download",
+      "1_dir" => $dir1,
+      "1_file" => $doc,
+      "1_subs" => "true",
+
+      "2_command" => "download",
+      "2_dir" => $dir2,
+      "2_file" => $doc,
+      "2_subs" => "true",
+
+      "3_command" => "compare",
+      "3_executable" => "myriad32.exe",
+      "3_dir1" => $dir1,
+      "3_file1" => $doc,
+      "3_dir2" => $dir2,
+      "3_file2" => $doc,
+    ));
+  }
+  return $result;
+}
+
+function FILES_SpecialEdit ($supergroupname, $object_id)
+{
+  $result = array();
+  $doc = FILES_TrueFilename ($supergroupname, $object_id);
+  $thedoctype = FILES_FileType ($supergroupname, $object_id);
+  if ($thedoctype=="dwg" || $thedoctype=="dgn") {
+    $result[ML("AutoManager","AutoManager")]["url"] = IMS_GenerateEditURL ("\\".$supergroupname."\\preview\\objects\\".$object_id."\\", $doc, "amview32.exe", true);
+    $result[ML("AutoManager","AutoManager")]["title"] = ML("Redline met AutoManager","Redline with AutoManager");
+    $result[ML("AutoManager","AutoManager")]["icon"] = "/openims/redline.gif";
+
+    $result[ML("AutoVue","AutoVue")]["url"] = IMS_GenerateEditURL ("\\".$supergroupname."\\preview\\objects\\".$object_id."\\", $doc, "avwin.exe", true);
+    $result[ML("AutoVue","AutoVue")]["title"] = ML("Redline met AutoVue","Redline with AutoVue");
+    $result[ML("AutoVue","AutoVue")]["icon"] = "/openims/redline.gif";
+
+    $result[ML("AutoVue","AutoVue")]["url"] = IMS_GenerateEditURL ("\\".$supergroupname."\\preview\\objects\\".$object_id."\\", $doc, "avwin.exe", true);
+    $result[ML("AutoVue","AutoVue")]["title"] = ML("Bekijk met AutoVue","View with AutoVue");
+    $result[ML("AutoVue","AutoVue")]["icon"] = "/openims/view.gif";
+
+    $result[ML("VoloView","VoloView")]["url"] = IMS_GenerateEditURL ("\\".$supergroupname."\\preview\\objects\\".$object_id."\\", $doc, "voloview.exe", true);
+    $result[ML("VoloView","VoloView")]["title"] = ML("Bekijk met VoloView","View with VoloView");
+    $result[ML("VoloView","VoloView")]["icon"] = "/openims/view.gif";
+  }
+  return $result;
+}
+
+function FILES_SpecialView ($supergroupname, $object_id)
+{
+  return array();
+}
+
+}";}

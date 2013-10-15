@@ -1,0 +1,19 @@
+a:2:{s:4:"name";s:18:"BPMS Search Plugin";s:4:"code";s:828:"if (!function_exists ("BPMS_Search_Plugin_ExtraOutput")) { // prevent multiple filter definitions
+
+function BPMS_Search_Plugin_ExtraOutput($visiblesearchresults = array(), $searchquery = "") 
+{
+  // Deze functie wordt aangeroepen onderaan het BPMS zoekscherm.
+  // $visiblesearchresults = array van zichtbare zoekresultaten (op het huidige scherm, alleen
+  //   als de gebruiker recht heeft het resultaat te zien) 
+  // De return value van de functie (string, mag html zijn) wordt ge-echo'd.  
+
+  //foreach ($visiblesearchresults as $resultspecs) {
+  //  $process_id = $resultspecs["process_id"];
+  //  $case_id = $resultspecs["case_id"];
+  //  $case = MB_Ref("process_".IMS_SuperGroupName()."_cases_".$process_id, $case_id);
+  //}
+
+  return "";
+}
+
+} // if (!function_exists ("BPMS_Search_Plugin_ExtraOutput"))";}

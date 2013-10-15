@@ -1,0 +1,24 @@
+a:2:{s:4:"name";s:26:"Taalaanpassingen (default)";s:4:"code";s:1285:"/************************************************************************************************
+ * Fouten in deze code kunnen leiden tot het direct volledig stoppen met werken van OpenIMS !!! *
+ * Middels de /disableflex url kan in noodgevallen deze functionaliteit worden uitgeschakeld.   *
+ ************************************************************************************************/
+
+/* Importeren van onderstaande functie zorgt ervoor dat de setting "echtnederlands"
+ * niet meer werken. Deze functionaliteit kan middels de functie desgewenst opnieuw
+ * geimplementeerd worden.
+ *
+ * Input arguments:
+ *   $lang: current language ("nl" / "en" / "de" / "fr" etc.)
+ *   $dutch: original dutch text in source code (argument to ML-call)
+ *   $english: original english text in source code (argument to ML-call)
+ *   $text: Proposed output in current language. What ML would show if ML_AlterResult did not exist.
+ *          Usually a copy of $dutch or $english, but this can can also come from the product or custom multilingual database)
+ * Return value:
+ *   What will be shown to the user. If unsure, please return $text.
+ */
+
+if (!function_exists('ML_AlterResult')) {
+  function ML_AlterResult($text, $lang, $dutch, $english) {
+    return $text;
+  }
+}";}

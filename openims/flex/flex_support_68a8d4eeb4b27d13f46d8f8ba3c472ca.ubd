@@ -1,0 +1,33 @@
+a:2:{s:4:"name";s:29:"Webdav Handler (experimental)";s:4:"code";s:942:"if (!function_exists ("WEBDAV_Settings")) { // prevent multiple definitions
+
+function WEBDAV_Settings ($basepath)
+{
+  if ($basepath=="") {
+    $settings["subdirs"] = array ("main", "upload", "download");
+  }
+  if ($basepath=="main") {
+    $settings["type"] = "DMS"; 
+    $settings["rootfolder"] = "root";
+    $settings["allowwrite"] = "yes";
+  }
+  if ($basepath=="upload") {    
+    $settings["type"] = "upload"; 
+    // $path contains the full path, $tmpfile contains the location of the temporary file
+    $settings["uploadhandlercode"] = '
+    '; 
+  }
+  if ($basepath=="download") {
+    $settings["type"] = "download"; 
+    $settings["dircode"] = '
+      $dir[] = "test1.txt";
+      $dir[] = "test2.txt";
+      $dir[] = "test3.txt";
+    ';
+    $settings["fetchcode"] = '
+      N_WriteFile ($tmpfile, "This is file $filename");
+    ';
+  }
+  return $settings;
+}
+
+} // if (!function_exists ("SHIELD_Restrict"))";}

@@ -1,0 +1,84 @@
+a:3:{s:4:"name";s:15:"[[[clickpath]]]";s:3:"tag";s:9:"clickpath";s:12:"code_content";s:3473:"// Breadcrumbs (kruimelpad)
+// Special features:
+//   Last item in clickpath receives class "active"
+//   In preview mode, items that are invisible in site mode receive the class "conceptonly"
+//   In preview mode, items that have changed since last publication receive the class "changed"
+// I recommend to make "conceptonly" parents gray, to indicate that they will be omitted from
+// the clickpath in site mode.  CSS for the other classes is provided, but can be deleted.
+// Default style assumed a dark background.
+
+$content = SUP_Example_ClickPath ($context["collection"], $context["site"], $context["page"]);
+
+function SUP_Example_ClickPath1 ($sitecollection_id, $site_id, $object_id, $active_id)
+{
+  N_Debug ("func. SUP_Example_ClickPath1 ($sitecollection_id, $site_id, $object_id, $active_id)");
+  $object = &MB_Ref ("ims_".$sitecollection_id."_objects", $object_id);
+  if (IMS_Preview()) {
+    $shorttitle = $object["parameters"]["preview"]["shorttitle"];
+    $longtitle = $object["parameters"]["preview"]["longtitle"];
+  } else {
+    $shorttitle = $object["parameters"]["published"]["shorttitle"];
+    $longtitle = $object["parameters"]["published"]["longtitle"];
+  }
+
+  $classes = array();
+  if ($active_id == $object_id) $classes[] = "active";
+  if (IMS_Preview() && !IMS_Visible($sitecollection_id, $object_id, "yes")) { 
+    $classes[] = "conceptonly"; 
+    $longtitle = ML("Niet zichtbaar voor bezoekers", "Not visible to visitors") . ": " . $longtitle;
+  }
+  if (IMS_Preview() && IMS_Visible($sitecollection_id, $object_id, "yes") && (MB_Fetch("ims_".$sitecollection_id."_objects", $object_id, "preview") == "yes")) { 
+    $classes[] = "changed"; 
+    $longtitle = ML("Gewijzigd sinds publicatie", "Changed since publication") . ": " . $longtitle;
+  }
+  if ($classes) {
+    $clickpath = '<a class="'. implode(" ", $classes) .'" title="' . N_HtmlEntities($longtitle, false) . '" href="/' . $site_id . '/' . $object_id . '.php">' . N_HtmlEntities($shorttitle, false) . '</a>';
+  } else {
+    $clickpath = '<a title="' . N_HtmlEntities($longtitle, false) . '" href="/' . $site_id . '/' . $object_id . '.php">' . N_HtmlEntities($shorttitle, false) . '</a>';
+  }
+
+  if ($object["parent"]) {
+    if (!$shorttitle || (!IMS_Preview() && !IMS_Visible($sitecollection_id, $object_id))) {
+      $clickpath = SUP_Example_ClickPath1 ($sitecollection_id, $site_id, $object["parent"], $active_id);
+    } else {
+      $clickpath = SUP_Example_ClickPath1 ($sitecollection_id, $site_id, $object["parent"], $active_id) . ' &gt; ' . $clickpath;
+    }
+  }
+  return $clickpath;
+}
+
+function SUP_Example_ClickPath($sitecollection_id, $site_id, $object_id)
+{
+  $style = '
+.clickpath a {
+	font-family: Arial, Helvetica, sans-serif; 
+        font-size: 12px;
+        color: #000000;
+	text-decoration: none;
+}
+.clickpath a.active {
+	font-weight: bold;
+}
+.clickpath a.conceptonly {
+	color: #666666;
+}
+.clickpath a.changed {
+	color: #ffcc33;
+}
+.clickpath a:hover,
+.clickpath a:link:hover, 
+.clickpath a:visited:hover {
+	text-decoration: underline;
+}
+';
+  //$res .= '<STYLE type="text/css">'.chr(13).chr(10);
+  //$res .= '<!--'.chr(13).chr(10);
+  //$res .= $style;
+  //$res .= '-->'.chr(13).chr(10);
+  //$res .= '</STYLE>'.chr(13).chr(10);
+  $res .= '<span class="clickpath">';
+  $res .= SUP_Example_ClickPath1 ($sitecollection_id, $site_id, $object_id, $object_id);
+  $res .= '</span>';
+  return $res;
+}
+";}

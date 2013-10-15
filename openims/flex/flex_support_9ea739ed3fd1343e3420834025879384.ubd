@@ -1,0 +1,89 @@
+a:2:{s:4:"name";s:15:"Wachtwoordeisen";s:4:"code";s:3773:"if (!function_exists('SHIELD_CheckPassword_Extra')) {
+  function SHIELD_CheckPassword_Extra($sgn, $username, $password, &$message) {
+    /* Output:
+     *   This function should return TRUE if the password is acceptable, FALSE if the password should be rejected.
+     *   Optionally, $message may be set to explain what is wrong with the password.
+     *
+     * Input:
+     *   sgn:      supergroupname
+     *   username: user's whose password will be changed
+     *   password: new password (plain text)     
+     */
+
+    // Default OpenIMS behaviour
+    if (strlen($password) < 6) return false;
+    if ($username==$password) return false;
+    return true;
+  }
+}
+
+/* Example for Sogeti. To use it, delete default function above and rename the function to SHIELD_CheckPassword_Extra. */
+if (!function_exists('SHIELD_CheckPassword_Extra')) {
+  function SHIELD_CheckPassword_Extra_Example($sgn, $username, $password, &$message) {
+    /* Output:
+     *   This function should return TRUE if the password is acceptable, FALSE if the password should be rejected.
+     *   Optionally, $message may be set to explain what is wrong with the password.
+     *
+     * Input:
+     *   sgn:      supergroupname
+     *   username: user's whose password will be changed
+     *   password: new password (plain text)     
+     */
+
+    // Find out how many different "types" of characters
+    $types = array();
+    for ($i = 0; $i < strlen($password); $i++) {
+      $char = substr($password, $i, 1);
+      if (ctype_alpha($char)) {
+        $types["alpha"] += 1;
+      } elseif (ctype_digit($char)) {
+        $types["digit"] += 1;
+      } else {
+        $types["other"] += 1;
+      }
+    }
+
+    // Find out if the user is an OpenIMS administrator. NB This function will also be called when an administrator
+    // changes the password on behalf of another user or creates a new user, so the current user is not the same as $username.
+    $currentuser = SHIELD_CurrentUser($sgn);
+    SHIELD_SimulateUser($username);
+    $admin = SHIELD_HasGlobalRight($sgn, "system");
+    SHIELD_SimulateUser($currentuser);
+
+    if ($username==$password) {
+      $message = "Het wachtwoord mag niet gelijk zijn aan de gebruikersnaam.";
+      return false;
+    }
+    if (count($types) < 2) {
+      $message = "Het wachtwoord moet minimaal twee van de volgende drie soorten tekens bevatten: letters, cijfers, leestekens.";
+      return false;
+    }
+    if (strlen($password) < 6) {
+      $message = "Het wachtwoord moet minimaal 6 tekens zijn.";
+      return false;
+    }
+    $userobject = &MB_Ref("shield_{$sgn}_users", $username);
+    if ($admin) {
+      $message = '<div align="left"><b>Extra wachtwoordeisen voor beheerders:</b> <ul><li>Minimaal 8 tekens</li><li>Hergebruik van laatste vier wachtwoorden niet toegestaat</li></ul>';
+      if (strlen($password) < 8) {
+        return false;
+      }
+      // Hergebruik laatste 4 wachtwoorden niet toegestaan
+      for ($i = 0; $i <= 3; $i++) {
+        if ($crypt = $userobject["oldpasswords"][$i]) {
+          if (SHIELD_ValidatePassword($crypt, $password)) return false;
+        }
+      }
+
+      // Opslaan nieuwe wachtwoord
+      // [Op dit moment zijn er geen condities meer die nog een fout kunnen veroorzaken, het wachtwoord zal door OpenIMS geaccepteerd worden.]
+      for ($i = 0; $i < 3; $i++) {
+        $userobject["oldpasswords"][$i] = $userobject["oldpasswords"][$i+1];
+      }
+      $userobject["oldpasswords"][3] = SHIELD_CryptPassword($password);
+    } 
+    $userobject["lastpasswordchange"] = time(); // Always save timestamp of last password change (for all users), this allows us to cancel account blocks when the password is reset
+
+    return true;
+  }
+}";}

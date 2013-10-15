@@ -1,0 +1,63 @@
+a:2:{s:4:"name";s:27:"Outlook Integration Handler";s:4:"code";s:2412:"if (!function_exists ("OUTLOOK_ClientButtons")) {
+
+function OUTLOOK_ClientButtons ()
+{
+  $ret = "";
+//  $ret .= "E-mails to DMS clipboard ";
+//  $ret .= "Attachments to DMS clipboard ";
+  $ret .= "E-mails to speficied folder ";
+  $ret .= "Sent e-mail to specified folder ";
+  // 0: geen 1:paars 2:orange 3:groen 4:geel 5:blauw 6:rood
+  $ret .= "msgflagcolor:1 ";
+  $ret .= "attflagcolor:2 ";
+  $ret .= "searchtag:Zoek project: ";
+  return $ret;
+}
+
+}
+
+if (!function_exists ("OUTLOOK_IntelligentLocationSearch")) {
+/* $ret .= "Overwrite existing document "; */
+  function OUTLOOK_IntelligentLocationSearch ()
+  {
+    global $sessionkey,$from,$filename,$subject,$date;
+    $sessionkey = strtolower($sessionkey);
+    $o = MB_Ref("standalone_sessionkey", $sessionkey);
+    $sgn = $o["sgn"];
+    $user = $o["userid"];
+    $xmlresult = "<results>\n";
+    $xmlresult .= "<documents>\n";
+    $selectspecs = array();
+    $selectspecs["select"]['$record["objecttype"]'] = "document";
+    $selectspecs["select"]['$record["filename"]'] = strtolower($filename);
+    $selectspecs["select"]['$record["preview"]=="yes"||$record["published"]=="yes"'] = true;
+    $selectspecs["value"] = '$record';
+    $result = MB_TurboMultiQuery("ims_".$sgn."_objects", $selectspecs);
+    SHIELD_SimulateUser($user); //required for SHIELD_HasObjectRight
+    foreach ($result as $key => $value)
+    {
+      if(SHIELD_HasObjectRight ($sgn, $key, "edit", false))
+      {
+        $casename = CASE_visiblecasename($sgn, $value["directory"]);
+        $xmlresult .= '<document name="'.htmlspecialchars($value["longtitle"]).' in '.$casename.'" id="'.$key.'"></document>'."\n";
+      }
+    }    
+    $xmlresult .= "</documents>\n";
+    if($from!="")
+    {
+      $xmlresult .= "<folders>\n"; //zoek cases
+      $selectspecs = array();
+      $selectspecs["filter"] = array('$record["longtitle"]',N_KeepBefore(N_Keepafter($from,"@"),"."));
+      $selectspecs["value"] = '$record';
+      $result = MB_TurboMultiQuery("ims_".$sgn."_case_data", $selectspecs);
+      foreach ($result as $key => $value)
+      {
+        $casename = $value["shorttitle"]." - ".$value["longtitle"];
+        $xmlresult .= '<folder name="'.htmlspecialchars($casename).'" id="'.$key."root".'"></folder>'."\n";
+      }
+      $xmlresult .= "</folders>\n";
+    }
+    $xmlresult .= "</results>\n";
+    return $xmlresult;
+  }
+}";}

@@ -1,0 +1,161 @@
+a:2:{s:4:"name";s:28:"Cookielogin events (example)";s:4:"code";s:8947:"/* THESE FUNCTIONS WILL ONLY BE CALLED WORK IF THE COOKIELOGON MECHANISM IS USED */
+
+/* Example functionality:
+   - temporary IP and account blocking to deter brute force password attacks.
+   - forced password change (with importable component "Wachtwoordeisen" en CMS component [[[passwordchangeknown]]]
+   LF201007: temporary account blocks are cancelled when the password is changed (with importable component "Wachtwoordeisen")
+ */
+  
+if (!function_exists("SHIELD_CookieLogon_BlockInteractiveLogon_Extra")) { 
+  function SHIELD_CookieLogon_BlockInteractiveLogon_Extra($supergroupname, $username) {
+    /* If this function returns true, login will be disallowed and the user will get some message about being temporarily banned */
+
+    // For this functionality to work, you also need the code in SHIELD_After(Failed)InteractiveLogon that updates / deletes the failed login counters.
+
+    // Note: these values are repeated in SHIELD_AfterFailedInteractiveLogon_Extra
+    $failedloginaccountresetafter = 3600;  // Unblock account after 3600 seconds
+    $failedloginaccountblockafter = 20;    // Block account after 20 failed login attempts
+    $failedloginipresetafter = 300;        // Unblock IP after 300 seconds
+    $failedloginipblockafter = 5;          // Block IP after 5 failed login attempts
+
+    $user = MB_Ref("shield_{$supergroupname}_users", $username);
+    if ($user && 
+        ($user["failedlogincount"] >= $failedloginaccountblockafter) && 
+        ($failedloginaccountresetafter + $user["lastfailedlogin"] >= time()) && 
+        ($user["lastfailedlogin"] > $user["lastpasswordchange"])) {
+      return true;
+    }
+
+    $ip = MB_Ref("local_{$supergroupname}_failedlogin_ips", md5(strtolower($_SERVER["REMOTE_ADDR"])));
+    if ($ip && 
+        ($ip["failedlogincount"] >= $failedloginipblockafter) && 
+        ($failedloginipresetafter + $ip["lastfailedlogin"] >= time())) {
+      return true;
+    }
+
+    return false;
+  }
+}
+
+if (!function_exists("SHIELD_AfterInteractiveLogon_Extra")) { 
+  function SHIELD_AfterInteractiveLogon_Extra($supergroupname, $username, $rememberme, $goto, $sessionkey) {
+    /* This function will be called after a succesful interactive logon. Use this function for extra logging, 
+     * resetting failed logon counters, modifying the session based on the user's privileges, etc.
+     * You can even redirect to a "you must change your password now" page.
+     */
+
+    // Reset failed login counters
+    $userobj = &MB_Ref("shield_{$supergroupname}_users", $username);
+    if ($userobj["failedlogincount"]) {
+      $user["failedlogincount"] = 0;
+      N_Log("login", "resetting failedlogincount for user $username");
+    }
+    MB_MUL_Delete("local_{$supergroupname}_failedlogin_ips", md5(strtolower($_SERVER["REMOTE_ADDR"])));
+
+    // Examples of doing some things to the session
+    if (SHIELD_ValidateAccess_Group ($supergroupname, $username, "administrators")) {
+      // Simulate the $myconfig[$sgn]["allowautologon"] = "no" setting, but only for administrators.
+      // If the administrator has a permanent session (because he choose "remember me" on the login form), delete it.
+      // Not ideal, since the user interface does not indicate that this is happening.
+      if ($userobj["permsessionkey"]) $userobj["permsessionkey"] = false;
+
+      // Simulate the $myconfig[$sgn]["cookielogin"]["trackip"] setting, but only for administrators
+      $sessionobject = TMP_LoadObject($sessionkey, false, "session");
+      $sessionobject["ip"] = $_SERVER["REMOTE_ADDR"]; // Store IP in session.
+      TMP_SaveObject($sessionkey, $sessionobject, "session");
+    }
+
+    // Check if the password has expired, and send the user to a "please change your password" CMS page.
+    // Obviously, the CMS component and page will need to be created, and you will need to change the url in the code below.
+    // Whatever happens here must match the password requirements and actions defined in SHIELD_CheckPassword_Extra.
+    // OpenIMS does not store old passwords and does not remember how old a password is. If you don't have a 
+    // SHIELD_CheckPassword_Extra that does actually do this (remember how old a password is etc.), than the code below will not work.
+    if (SHIELD_ValidateAccess_Group ($supergroupname, $username, "administrators")
+        && $userobj["lastpasswordchange"] && $userobj["lastpasswordchange"] + 31*24*3600 < time()) {
+      if ($userobj["lastpasswordchange"] + 40*24*3600 > time()) {
+        // Grace period. Please change password. If he wants to, the user can navigate away from the change password page
+        $daysleft = (int) (($userobj["lastpasswordchange"] + 40*24*3600 - time()) / (24*3600));
+        $url = N_CurrentProtocol() . getenv('HTTP_HOST') . "/systeem/wachtwoord_wijzigen?goto=".urlencode($goto)."&daysleft=$daysleft";
+        N_Redirect($url);
+      } else {
+        // Must change password now. Can't navigate away from the page, because they will not be logged in if they try.
+        // Important: the change password page must (according to workflow) be publically accessible!
+        $url = N_CurrentProtocol() . getenv('HTTP_HOST') . "/systeem/wachtwoord_wijzigen?goto=".urlencode($goto)."&daysleft=now&shielddummy=".SHIELD_Encode("");
+        SHIELD_LogOff($url);
+      }
+    }
+
+
+    return;
+  }
+}
+
+if (!function_exists("SHIELD_AfterFailedInteractiveLogon_Extra")) { 
+  function SHIELD_AfterFailedInteractiveLogon_Extra($supergroupname, $username, $rememberme) {
+    /* This function will be called after a failed interactive logon (wrong username or password). Use 
+     * this function for extra logging, updating failed logon counters, etc.
+     */
+
+     // Note: these values are repeated in SHIELD_CookieLogon_BlockInteractiveLogon_Extra
+    $failedloginaccountresetafter = 3600;
+    $failedloginaccountblockafter = 20;
+    $failedloginipresetafter = 300;
+    $failedloginipblockafter = 5;
+
+    $user = &MB_Ref("shield_{$supergroupname}_users", $username);
+    if (($failedloginaccountresetafter + $user["lastfailedlogin"] < time()) 
+        || ($user["lastfailedlogin"] < $user["lastpasswordchange"])) {
+      $user["failedlogincount"] = 1;
+    } else {
+      $user["failedlogincount"] += 1;
+      if ($user["failedlogincount"] == $failedloginaccountblockafter) {
+        N_Log("login", "TEMP BANNED user account user={$username}, failedlogincount={$user["failedlogincount"]}, sgn=$supergroupname");
+      }
+    }
+    $user["lastfailedlogin"] = time();
+    N_Log("login", "increased failedlogincount user={$username}, failedlogincount={$user["failedlogincount"]}, sgn=$supergroupname");
+
+    $ip = &MB_Ref("local_{$supergroupname}_failedlogin_ips", md5(strtolower($_SERVER["REMOTE_ADDR"])));
+    if ($failedloginipresetafter + $ip["lastfailedlogin"] < time()) {
+      $ip["failedlogincount"] = 1;    
+    } else {
+      $ip["failedlogincount"] += 1;
+      if ($ip["failedlogincount"] == $failedloginipblockafter) {
+        N_Log("login", "TEMP BANNED ip ip={$_SERVER["REMOTE_ADDR"]}, failedlogincount={$ip["failedlogincount"]}, sgn=$supergroupname");
+      }
+    }
+    $ip["lastfailedlogin"] = time();
+    N_Log("login", "increased failedlogincount ip={$_SERVER["REMOTE_ADDR"]}, failedlogincount={$ip["failedlogincount"]}, sgn=$supergroupname");
+
+    return;
+  }
+}
+
+if (!function_exists("SHIELD_AfterResumePermanentLogon_Extra")) { 
+  function SHIELD_AfterResumePermanentLogon_Extra($sgn, $user_id) {
+    /* This function will be called when a permanently logged in user starts a new browser session.
+     * So the scenario is
+     * 1. user logs in with "remember be" (SHIELD_AfterInteractiveLogon_Extra is called)
+     * 2. user exits browser
+     * 3. user restarts browser and visits some part of OpenIMS that *requires* a logged in user
+     * 4. user is automatically logged in and this function is called
+     */
+
+    // Example: logging. This is superfluous, because you can achieve the same thing with the
+    // $myconfig[$sgn]["cookielogin"]["logging"] = "yes" setting
+    N_Log("login", "SHIELD_AfterResumePermanentLogon_Extra: resuming permanent session: user={$user_id}, addr={$_SERVER["REMOTE_ADDR"]}, sgn=$sgn");
+  }
+}
+
+if (!function_exists("SHIELD_AfterLogoff_Extra")) { 
+  function SHIELD_AfterLogoff_Extra($sgn, $user_id) {
+    /* !!! This function will ***NOT*** be called when the user exits the browser. !!!
+     * This function is called when the user visits openims/logout.php (usually through a 
+     * link in the OpenIMS UI, but that is something that you need to configure).
+     */
+
+    // Example: logging. This is superfluous, because you can achieve the same thing with the
+    // $myconfig[$sgn]["cookielogin"]["logging"] = "yes" setting
+    N_Log("login", "SHIELD_AfterLogoff_Extra: user={$user_id}, addr={$_SERVER["REMOTE_ADDR"]}, sgn={$sgn}");
+  }
+}";}

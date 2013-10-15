@@ -1,0 +1,170 @@
+body, div, p, th, td, li, dd {
+  font-family: Trebuchet MS, Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+}
+body {
+  margin: 0;
+  background-color: #849CB9;
+}
+#pagecontainer {
+  text-align: center; /* For IE6 where margin 0 auto doesnt work. Not set on the body, because we dont want the coolbar to center */
+}
+#page {
+  width: 780px;
+  margin: 0 auto;
+  background: #FFF url(/ufc/rapid/ce_sites/objects/31092da6fca97a522c8ae38e5a5e3546/bg.gif) repeat-y 0 0;
+  color: #333333;
+  text-align: left;
+}
+#header {
+  padding: 30px 30px 10px 30px;
+  background-color: #385373;
+}
+#header a {
+  text-decoration: none;
+  font-size: 30px;  
+  color: #FFFFFF;
+}
+#hormenu {
+  padding: 6px 15px 6px 15px;
+  font-size: 15px; 
+  text-align: right;
+  text-transform: uppercase;
+  color: #7192B9;
+  background-color: #385373;
+}
+#hormenu a {
+  color: #7192B9;
+  text-decoration: none; 
+  padding: 0 15px 0 15px;
+}
+#hormenu a:hover {
+  color: #FFFFFF;
+}
+#left {
+  float: left;
+  width: 170px;
+  padding: 15px;
+  margin: 0;
+  vertical-align: top;
+  color: #132D4C;
+  /* background color determined by bg.gif that is  set on container (so that it will go all the way down regardless of how much content there is) */
+}
+#main {
+  margin: 0 0 0 200px;
+  padding: 15px 30px 15px 30px;
+  vertical-align: top;
+  color: #333333;
+  /* background color determined by bg.gif that is  set on container (so that it will go all the way down regardless of how much content there is) */
+}
+#footer {
+  color: #7192B9;
+  background-color: #354557;
+  padding: 5px 30px 5px 30px;
+  text-align: center;
+}  
+.clear {
+  clear:both;
+}
+h1,h2,h3,h4,h5,h6 {
+  color: #849CB9;
+}
+h1 {
+  font-size: 16pt;
+}
+h2 {
+  font-size: 14pt;
+}
+h3 {
+  font-size: 12pt;
+}
+h4,h5,h6 {
+  font-size: 11pt;
+  font-weight: bold;
+}
+
+/* Widget verticalmenu.  Structuur: ul > li > a. */
+.verticalmenu_container {
+  width: 100%;
+}
+
+ul.verticalmenu {
+  font-family: Trebuchet MS, Arial, sans-serif;
+  font-size: 13px;
+  padding: 0; 
+  margin: 0;
+}
+ul.verticalmenu li { 
+	display: block;
+	margin: 0; 
+  padding: 0; /* important to keep padding and border at 0 for box model */
+  border: 0;
+  vertical-align: top; /* to stop IE from inserting extra vertical margins, see http://www.brunildo.org/test/IEWlispace.php */
+} 
+ul.verticalmenu a { 
+	display: block;
+	text-align: left; 
+	text-decoration: none; 
+	margin: 0;
+	padding: 2px 10px 4px 4px; 
+} 
+ul.verticalmenu li a:link, 
+ul.verticalmenu li a:visited { 
+	color: #132D4C; 
+}
+ul.verticalmenu li.active a:link, 
+ul.verticalmenu li.active a:visited { 
+	font-weight: bold;
+}
+ul.verticalmenu li.conceptonly a:link, 
+ul.verticalmenu li.conceptonly a:visited,
+ul.verticalmenuhelp .conceptonly { 
+	color: #666666;
+}
+ul.verticalmenu li.changed a:link, 
+ul.verticalmenu li.changed a:visited,
+ul.verticalmenuhelp .changed { 
+	color: #CC9900;
+}
+ul.verticalmenu li a:hover,
+ul.verticalmenu li a:link:hover, 
+ul.verticalmenu li a:visited:hover {
+  color: #FFF;
+  background-color: #849CB9;  
+}
+ul.verticalmenu ul.verticalsubmenu {
+  padding: 0; /* put the padding on the a */
+  margin: 0;
+}
+ul.verticalmenu ul.verticalsubmenu li a {
+	margin: 0;
+	padding: 2px 10px 4px 14px; 
+}
+ul.verticalmenu ul.verticalsubmenu li a:link,
+ul.verticalmenu ul.verticalsubmenu li a:visited {
+	font-weight: normal;
+}
+ul.verticalmenu ul.verticalsubmenu li.active a:link,
+ul.verticalmenu ul.verticalsubmenu li.active a:visited {
+	font-weight: bold;
+}
+
+.clickpath a {
+  color: #333333;
+	text-decoration: none;
+}
+.clickpath a.active {
+	font-weight: bold;
+}
+.clickpath a.conceptonly {
+	color: #666666;
+}
+.clickpath a.changed {
+  color: #666666;
+}
+.clickpath a:hover,
+.clickpath a:link:hover, 
+.clickpath a:visited:hover {
+	text-decoration: underline;
+}

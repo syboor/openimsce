@@ -1,0 +1,22 @@
+a:2:{s:4:"name";s:23:"HTML fixer (OpenOffice)";s:4:"code";s:875:"if (!function_exists ("IMS_Htmlfixer")) { // prevent multiple filter definitions
+
+function IMS_Htmlfixer ($content)
+{
+  // Indien het UTF-8 is (veroorzaakt door OpenOffice)
+  if (mb_detect_encoding($content,"UTF-8, ISO-8859-1") == "UTF-8") {
+    // maak er ascii van
+    $content = N_UTF2HTML($content, true); // To be safe, generate ascii html (dont use non-ascii iso characters)
+    $content = str_ireplace('charset=utf-8', 'charset=windows-1252', $content);
+    global $file;
+    if ($file && function_exists('user') && function_exists('domain')) {
+      N_Log("htmlfixer", "IMS_HtmlFixer: fixed UTF-8 page, file = $file, user = " . user() . ", domain = " . domain());
+    } else {
+      N_Log("htmlfixer", "IMS_HtmlFixer: fixed UTF-8 page (signal was not sent by gate)");
+    }
+
+  }
+
+  return $content;
+}
+
+} // if (!function_exists ("IMS_Htmlfixer"))";}

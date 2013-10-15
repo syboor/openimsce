@@ -1,0 +1,9 @@
+a:2:{s:4:"name";s:31:"Special document data (default)";s:4:"code";s:308:"if (!function_exists ("IMS_SpecialDocumentData")) { // prevent multiple definitions
+
+function IMS_SpecialDocumentData ($data, $sitecollection_id, $object_id, $object)
+{
+  // data contains "set_varname" => "visible value" pairs
+  return $data;
+}
+
+} // if (!function_exists ("IMS_SpecialDocumentData"))";}

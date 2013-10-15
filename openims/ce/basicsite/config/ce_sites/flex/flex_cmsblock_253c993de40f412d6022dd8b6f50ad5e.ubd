@@ -1,0 +1,10 @@
+a:3:{s:4:"name";s:25:"[[[stylesheet:id,media]]]";s:3:"tag";s:10:"stylesheet";s:12:"code_content";s:557:"// Link to a stylesheet stored in DMS.
+// Use preview version when browsing in preview-mode, use last published version in site-mode.
+list ($id, $media) = explode(',', $context["flexparams"]);
+if (IMS_Preview()) {
+  $content .= '<link rel="stylesheet" type="text/css" href="/ufc/file/ce_sites/'.$id.'/pr/style.css" media="'.$media.'">';
+} else {
+  $object = IMS_AccessObject(IMS_SuperGroupName(), $id);
+  $content .= '<link rel="stylesheet" type="text/css" href="/ufc/rapid/ce_sites/objects/'.$id.'/'.$object["filename"].'" media="'.$media.'">';
+}
+";}

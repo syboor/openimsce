@@ -1,0 +1,8 @@
+a:2:{s:4:"name";s:23:"HTML raw content filter";s:4:"code";s:215:"if (!function_exists ("HTML_RawContentFilter")) { // prevent multiple filter definitions
+
+function HTML_RawContentFilter ($content)
+{
+  return $content;
+}
+
+} // if (!function_exists ("HTML_RawContentFilter"))";}

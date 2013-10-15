@@ -1,0 +1,83 @@
+a:2:{s:4:"name";s:18:"Extra lijststijlen";s:4:"code";s:3741:"/*
+  To use these extra list styles, add the following to your site configuration.
+  $myconfig["???_sites"]["customlistmethod"]["myradio"]["title"] = "My radiobuttons";
+  $myconfig["???_sites"]["customlistmethod"]["myradio"]["editfunc"] = "_CUST_CustomListRadioEdit_Example";
+
+  $myconfig["???_sites"]["customlistmethod"]["mylist"]["title"] = "My list";
+  $myconfig["???_sites"]["customlistmethod"]["mylist"]["editfunc"] = "_CUST_CustomListSelectEdit_Example";
+  $myconfig["???_sites"]["customlistmethod"]["mylist"]["showfunc"] = "_CUST_CustomListSelectShow_Example";
+  
+  If a (show or edit) function is not defined, the default list behaviour will be used. There is often no need to define a show function.
+  
+*/
+
+if (!function_exists("_CUST_CustomListRadioEdit_Example")) {
+  function _CUST_CustomListRadioEdit_Example($values, $value, $fieldname, $field, $fieldtitletext) {
+    // $values: array of $visible -> $internal values
+    // $value: current (internal) value
+    // $fieldname: name of the field that is guaranteed to be unique for the form
+    // $field: name of the field (not necessarily unique)
+    // $fieldtitletext: name of field (might be used in "alt" or other invisible html attributes)
+
+    // IMPORTANT: in your HTML, use "field_$fieldname" for the name attribute. If you use any id attribute, use $fieldname as well (not $field).
+    // If you want to look up the field in ims_fields, use $field (not $fieldname).
+
+    // Example: very standard vertical radio buttons
+
+    foreach ($values as $visible => $internal) {
+      if ($internal == $value) {
+        $fieldcode .= '<input type="radio" name="field_'.$fieldname.'" value="'.$internal.'" checked> '.$visible.'<br>';
+      } else {
+        $fieldcode .= '<input type="radio" name="field_'.$fieldname.'" value="'.$internal.'"> '.$visible.'<br>';
+      }
+    }
+    return $fieldcode;
+  }
+}
+
+if (!function_exists("_CUST_CustomListSelectEdit_Example")) {
+  function _CUST_CustomListSelectEdit_Example($values, $value, $fieldname, $field, $fieldtitletext) {
+    // $values: array of $visible -> $internal values
+    // $value: current (internal) value
+    // $fieldname: name of the field that is guaranteed to be unique for the form
+    // $field: name of the field (not necessarily unique)
+    // $fieldtitletext: name of field (might be used in "alt" or other invisible html attributes)
+
+    // IMPORTANT: in your HTML, use "field_$fieldname" for the name attribute. If you use any id attribute, use $fieldname as well (not $field).
+    // If you want to look up the field in ims_fields, use $field (not $fieldname).
+
+    // Example: a full size (not-collapsed) HTML select box
+
+    $fieldcode = '<select id="dwf_'.$fieldname.'" name="field_'.$fieldname.'" title="'.$fieldtitletext.'" size="'.count($values).'"> ';
+    foreach ($values as $visible => $internal) {
+      if ($internal == $value) {
+        $fieldcode .= '<option value="'.$internal.'" selected>'.$visible.'</option>';
+      } else {
+        $fieldcode .= '<option value="'.$internal.'">'.$visible.'</option>';
+      }
+    }
+    $fieldcode .= '</select>'; 
+
+    return $fieldcode;
+  }
+}
+
+if (!function_exists("_CUST_CustomListSelectShow_Example")) {
+  function _CUST_CustomListSelectShow_Example($values, $value, $show) {
+    // $values: array of $visible -> $internal values
+    // $value: current (internal) value
+    // $show: "visible" / "internal" 
+
+    if ($show == "visible") {
+      foreach ($values as $visible => $internal) {
+        if ($internal == $value) return $visible;
+      } 
+    } else {
+      if ($value) return $value;
+    }
+
+    // Still here:
+    return "&lt;Geen waarde ingevuld&gt;";
+
+  }
+}";}

@@ -1,0 +1,14 @@
+a:2:{s:4:"name";s:34:"Transferagent local edit (default)";s:4:"code";s:489:"if (!function_exists ("IMS_GenerateTransferURL_Extra")) { // prevent multiple filter definitions
+  // returns path to file, or false for default transfer agent behaviour
+  function IMS_GenerateTransferURL_Extra($directory, $file, $editor, $includesubs, $editmode) {
+// example: if edit then return path to local file, else default behaviour
+//    if($editmode) {
+//      return "C:\\openims" . $directory;
+//    } else {
+//      return false;
+//    }
+
+    return false;
+  }
+
+}";}

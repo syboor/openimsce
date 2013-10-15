@@ -1,0 +1,54 @@
+a:2:{s:4:"name";s:28:"Taalaanpassingen (voorbeeld)";s:4:"code";s:2566:"/************************************************************************************************
+ * Fouten in deze code kunnen leiden tot het direct volledig stoppen met werken van OpenIMS !!! *
+ * Middels de /disableflex url kan in noodgevallen deze functionaliteit worden uitgeschakeld.   *
+ ************************************************************************************************/
+
+/* Dit voorbeeldcomponent is tevens de implementatie van de "echtnederlands" setting.
+ * Wanneer deze component naar het maatwerk geimporteerd wordt, is de setting niet meer nodig.
+ *
+ * Input arguments:
+ *   $lang: current language ("nl" / "en" / "de" / "fr" etc.)
+ *   $dutch: original dutch text in source code (argument to ML-call)
+ *   $english: original english text in source code (argument to ML-call)
+ *   $text: Proposed output in current language. What ML would show if ML_AlterResult did not exist.
+ *          Usually a copy of $dutch or $english, but this can can also come from the product or custom multilingual database)
+ * Return value:
+ *   What will be shown to the user. If unsure, please return $text.
+ */
+
+
+if (!function_exists('ML_AlterResult')) {
+  function ML_AlterResult($text, $lang, $dutch, $english) {
+    if ($lang == "nl") {
+      if ($english == "workflow")  
+        $text = "documentstroom";  
+      elseif ($english == "Workflow")  
+        $text = "Documentstroom";  
+      elseif ($english == "Document workflows")  
+        $text = "Documentstromen";  
+      elseif ($english == "Document workflow")  
+        $text = "Documentstromen";  
+      elseif ($english == "scope")  
+        $text = "bereik";  
+      elseif ($english == "Scope")  
+        $text = "Bereik";  
+      else {  
+        $text = str_replace("templates", "sjablonen", $text);  
+        $text = str_replace("template", "sjabloon", $text);  
+        $text = str_replace("Templates", "Sjablonen", $text);  
+        $text = str_replace("Template", "Sjabloon", $text);  
+        $text = str_replace("folders", "mappen", $text);  
+        $text = str_replace("folder", "map", $text);  
+        $text = str_replace("Folders", "Mappen", $text);  
+        $text = str_replace("Folder", "Map", $text);  
+        $text = str_replace("workflows", "documentstromen", $text);  
+        $text = str_replace("workflow", "documentstroom", $text);  
+        $text = str_replace("workflows", "documentstromen", $text);  
+        $text = str_replace("workflow", "documentstroom", $text);  
+      } 
+    }
+
+    return $text;
+  }
+}
+";}

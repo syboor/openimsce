@@ -1,0 +1,9 @@
+a:2:{s:4:"name";s:21:"New Document Handling";s:4:"code";s:146:"if (!function_exists ("GATE_NewDocumentHandler")) {
+
+function GATE_NewDocumentHandler($guid)
+{
+  echo "GUID: $guid<br>";
+  echo "ok";
+}
+
+}";}

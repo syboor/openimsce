@@ -1,0 +1,44 @@
+a:2:{s:4:"name";s:24:"SOAP Gateway (voorbeeld)";s:4:"code";s:1579:"// *** WARNING, PLEASE SET THE PROPER IP FOR SECURITY ***
+
+if (!function_exists ("SOAP_Gateway")) { // prevent multiple definitions
+
+/* Example usage (PHP):
+  require_once(getenv("DOCUMENT_ROOT").'/nusoap/nusoap.php');
+  $server = "*** SERVER NAME ***";
+  $url = "http://$server/openims/soap.php";
+  $client = new nusoapclient($url);
+
+  // echo
+  $result = $client->call('SOAP_Gateway', array('function' => 'echo', 'input' => 'Hello world!'));
+  echo $result;
+
+  // setxml
+  $result = $client->call('SOAP_Gateway', array('function' => 'setxml', 'input' => array('table'=>'local_test', 'key'=>'test', 'data'=>'Hello world!')));
+
+  // getxml
+  $result = $client->call('SOAP_Gateway', array('function' => 'getxml', 'input' => array('table'=>'local_test', 'key'=>'test')));
+  echo $result."<br>";
+
+  // eval
+  $result = $client->call('SOAP_Gateway', array('function' => 'eval', 'input' => array('code'=>'$output=$input*3;', 'input'=>3)));
+  echo $result."<br>";
+*/
+
+function SOAP_Gateway ($function, $rawinput)
+{
+  global $REMOTE_ADDR;
+//  if ($REMOTE_ADDR!="") return "*** SECURITY ERROR ***"; // Use for security
+  if ($function=="echo") {
+    return $rawinput;
+  } else if ($function=="getxml") {
+    return MB_Load ($rawinput["table"], $rawinput["key"]);
+  } else if ($function=="setxml") {
+    return MB_Save ($rawinput["table"], $rawinput["key"], $rawinput["data"]);
+  } else if ($function=="eval") {
+    $input = $rawinput["input"];
+    eval ($rawinput["code"]);
+    return $output;
+  }
+}
+
+} // if (!function_exists ("SOAP_Gateway"))";}

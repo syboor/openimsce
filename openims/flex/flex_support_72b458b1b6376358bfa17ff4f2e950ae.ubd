@@ -1,0 +1,8 @@
+a:2:{s:4:"name";s:22:"SOAP Gateway (default)";s:4:"code";s:206:"if (!function_exists ("SOAP_Gateway")) { // prevent multiple definitions
+
+function SOAP_Gateway ($function, $input)
+{
+  return "*** SECURITY ERROR ***";
+}
+
+} // if (!function_exists ("SOAP_Gateway"))";}

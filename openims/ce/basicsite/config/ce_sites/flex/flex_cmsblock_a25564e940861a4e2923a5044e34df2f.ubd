@@ -1,0 +1,221 @@
+a:3:{s:4:"name";s:21:"[[[vermenutwolevel]]]";s:3:"tag";s:15:"vermenutwolevel";s:12:"code_content";s:8475:"// Vertical menu showing two levels of navigation, usually brothers and children.
+// Uses nested <ul>'s.
+// This menu is "relative" to the current page and therefore (combined with a clickpath) suitable 
+// for arbitrarily deep navigation.
+// The outer <ul> shows the brothers (except when the current page is the home page), the inner <ul>
+//   shows the children. If the current page has no children but does have a grandparent, show the 
+//   current page in the second level.
+
+// Special features:
+//   If current page is in menu, set appropriate class ("active") on this item.
+//   In preview mode, items that are invisible in site mode receive the class "conceptonly"
+//   In preview mode, items that have changed since last publication receive the class "changed"
+//   If no children are found, and parent is not IMS_Visible, show only the page itself, no brothers.
+
+$sgn = IMS_SuperGroupName();
+$page_id = $context["page"];
+$page = MB_Ref("ims_".$sgn."_objects", $page_id);
+
+if (!$page["parent"]) {
+  $root_id = $page_id;
+  $items = IMS_Children($context["collection"], $context["site"], $root_id);
+  $activeitem = "";
+} else {
+  if (IMS_Children($context["collection"], $context["site"], $page_id)) {
+    // De huidige pagina heeft kinderen: Toon huidige pagina samen met broertjes op niveau 1, de kinderen op niveau 2.
+    $activeitem = $page_id;
+    if (IMS_Visible($context["collection"], $page["parent"])) {
+      $items = IMS_Children($context["collection"], $context["site"], $page["parent"]);
+    } else {
+      $items = array($page_id =>
+         array("shorttitle" => $page["parameters"]["published"]["shorttitle"], 
+               "longtitle" => $page["parameters"]["published"]["longtitle"],
+               "url" => "/" . $context["site"] . "/" . $page_id . ".php"));
+    }
+    $subitems = IMS_Children($context["collection"], $context["site"], $page_id);
+  } else {
+    $higher = $page["parent"];
+    while ($higher) {
+      if (IMS_Visible($context["collection"], $higher)) {
+        $visibleparent = $higher;
+        break;
+      }
+      $higher = IMS_Parent($context["collection"], $context["site"], $higher);
+    }
+    if (IMS_Parent($context["collection"], $context["site"], $higher)) { // is er een grootouder?
+      if ($visibleparent == $page["parent"]) {
+        $subitems = IMS_Children($context["collection"], $context["site"], $visibleparent);
+      } else {
+        $subitems = array($page_id =>
+           array("shorttitle" => $page["parameters"]["published"]["shorttitle"], 
+                 "longtitle" => $page["parameters"]["published"]["longtitle"],
+                 "url" => "/" . $context["site"] . "/" . $page_id . ".php"));
+      }
+      $activesubitem = $page_id;
+      $activeitem = $visibleparent;
+      $root_id = IMS_Parent($context["collection"], $context["site"], $visibleparent);
+      if (IMS_Visible($context["collection"], $root_id)) {
+        $items = IMS_Children($context["collection"], $context["site"], $root_id);
+      } else {
+        $items = array($visibleparent =>
+           array("shorttitle" => $obj["parameters"]["published"]["shorttitle"], 
+                 "longtitle" => $obj["parameters"]["published"]["longtitle"],
+                 "url" => "/" . $context["site"] . "/" . $page_id . ".php"));
+      }
+    } else {
+      if ($visibleparent == $page["parent"]) {
+        $items = IMS_Children($context["collection"], $context["site"], $visibleparent);
+      } else {
+        $items = array($page_id =>
+           array("shorttitle" => $page["parameters"]["published"]["shorttitle"], 
+                 "longtitle" => $page["parameters"]["published"]["longtitle"],
+                 "url" => "/" . $context["site"] . "/" . $page_id . ".php"));
+      }
+      $activeitem = $page_id;
+    }
+  }
+}
+
+$content .= '<div class="verticalmenu_container"><ul class="verticalmenu">';	
+
+foreach ($items as $id => $specs) {
+  $classes = array();
+  if ($id == $activeitem) {
+    $classes[] = "active";
+  } else {
+    $classes[] = "inactive";
+  }
+  if (IMS_Preview() && !IMS_Visible($context["collection"], $id, "yes")) { 
+    $classes[] = "conceptonly"; 
+    $specs["longtitle"] = ML("Niet zichtbaar voor bezoekers", "Not visible to visitors") . ": " . $specs["longtitle"];
+  }
+  if (IMS_Preview() && IMS_Visible($context["collection"], $id, "yes") && (MB_Fetch("ims_".$context["collection"]."_objects", $id, "preview") == "yes")) { 
+    $classes[] = "changed"; 
+    $specs["longtitle"] = ML("Gewijzigd sinds publicatie", "Changed since publication") . ": " . $specs["longtitle"];
+  }
+  if ($classes) {
+    $content .= '<li class="' . implode(" ", $classes) . '">';
+  } else {
+    $content .= '<li>';
+  }
+  $content .= '<a title="'.htmlentities($specs["longtitle"]).'" href="'.$specs["url"].'">'.htmlentities($specs["shorttitle"]).'</a>';
+  if ($id == $activeitem) {
+    if (is_array($subitems) && count($subitems)) {
+      $content .= '<ul class="verticalsubmenu">';
+      foreach ($subitems as $subid => $subspecs) {
+        $classes = array();
+        if ($subid == $activesubitem) {
+          $classes[] = "active";
+        } else {
+          $classes[] = "inactive";
+        }
+        if (IMS_Preview() && !IMS_Visible($context["collection"], $subid, "yes")) { 
+          $classes[] = "conceptonly"; 
+          $specs["longtitle"] = ML("Niet zichtbaar voor bezoekers", "Not visible to visitors") . ": " . $subspecs["longtitle"];
+        }
+        if (IMS_Preview() && IMS_Visible($context["collection"], $subid, "yes") && (MB_Fetch("ims_".$context["collection"]."_objects", $subid, "preview") == "yes")) { 
+          $classes[] = "changed"; 
+          $specs["longtitle"] = ML("Gewijzigd sinds publicatie", "Changed since publication") . ": " . $subspecs["longtitle"];
+        }
+        if ($classes) {
+          $content .= '<li class="' . implode(" ", $classes) . '">';
+        } else {
+          $content .= '<li>';
+        }
+        $content .= '<a title="'.htmlentities($subspecs["longtitle"]).'" href="'.$subspecs["url"].'">'.htmlentities($subspecs["shorttitle"]).'</a></li>';
+      }
+      $content .= '</ul>';
+    }
+  }
+  $content .= '</li>';
+}
+
+$content .= '</ul></div>';
+
+
+// Example style.  Move it to your external style sheet or template's <head>, since 
+// <style> inside <body> won't validate.
+$style = '
+/* Widget verticalmenu.  Structuur: ul > li > a. */
+
+.verticalmenu_container {
+        width: 182px;
+}
+
+ul.verticalmenu {
+        font-family: Arial, Helvetica, sans-serif; 
+        font-size: 13px;
+        border-bottom: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        padding: 0; 
+        margin: 0;
+}
+ul.verticalmenu li { 
+	display: block;
+	margin: 0; 
+        padding: 0; /* important to keep padding and border at 0 for box model */
+        border: 0;
+        vertical-align: top; /* to stop IE from inserting extra vertical margins, see http://www.brunildo.org/test/IEWlispace.php */
+        border-top: 1px solid black;
+} 
+ul.verticalmenu a { 
+	display: block;
+	text-align: left; 
+	text-decoration: none; 
+	margin: 0;
+	padding: 2px 10px 4px 4px; 
+        background-color: #ffcc33;
+} 
+ul.verticalmenu li a:link, 
+ul.verticalmenu li a:visited { 
+	color: #000000; 
+}
+ul.verticalmenu li.active a:link, 
+ul.verticalmenu li.active a:visited { 
+	font-weight: bold;
+}
+ul.verticalmenu li.conceptonly a:link, 
+ul.verticalmenu li.conceptonly a:visited,
+ul.verticalmenuhelp .conceptonly { 
+	color: #666666;
+}
+ul.verticalmenu li.changed a:link, 
+ul.verticalmenu li.changed a:visited,
+ul.verticalmenuhelp .changed { 
+	color: #CC9900;
+}
+ul.verticalmenu li a:hover,
+ul.verticalmenu li a:link:hover, 
+ul.verticalmenu li a:visited:hover {
+        background-color: #ccc;  
+}
+ul.verticalmenu ul.verticalsubmenu {
+        padding: 0; /* put the padding on the a */
+        margin: 0;
+}
+ul.verticalmenu ul.verticalsubmenu li a {
+	margin: 0;
+	padding: 2px 10px 4px 14px; 
+        background-color: #ffff99;
+}
+ul.verticalmenu ul.verticalsubmenu li a:link,
+ul.verticalmenu ul.verticalsubmenu li a:visited {
+	font-weight: normal;
+}
+ul.verticalmenu ul.verticalsubmenu li.active a:link,
+ul.verticalmenu ul.verticalsubmenu li.active a:visited {
+	font-weight: bold;
+}
+';
+
+/*
+$content = '
+<style>
+<!--
+'.$style . '
+-->
+</style>
+'.$content;
+*/
+";}

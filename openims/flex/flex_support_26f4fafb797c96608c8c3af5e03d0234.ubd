@@ -1,0 +1,208 @@
+a:2:{s:4:"name";s:21:"Outlook E-mail Import";s:4:"code";s:8976:"//<?
+/* This function is called by gate.php, and gate.php is called by the Outlook addin.
+ *
+ * Warning: modifications may result in infinite loops! 
+ * E.g. "commenting out" N_DeleteFile -> infinite loop
+ */
+
+if (!function_exists ("GATE_ProcessClipboard")) { // prevent multiple definitions
+
+function GATE_ProcessClipboard ($sgn, $user) {
+//return;
+  $manglehistory = "false";
+
+  uuse("search");
+  uuse("case");
+  uuse("tree");
+  uuse("ims");
+  uuse("outlook");
+
+  N_Log("mailimport", "GATE_ProcessClipboard start: sgn = $sgn, user = $user");
+
+  $path = "html::/" . $sgn . "/clip/" . $user;
+  $todo = GATE_ClipboardDetermineTodo($sgn, $user);
+  while (count($todo)) {
+    if (!OUTLOOK_CheckFlag($user)) return; // Return if some other process is already processing this user's dir
+    foreach ($todo as $file => $manifestarray) {
+      if($manifestarray["TARGETTYPE"]=="file") //if a file should be updated
+      {
+        $ext = N_KeepAfter ($file, ".", true);
+        $object = IMS_AccessObject ($sgn, $manifestarray["TARGET"]);
+        $doc = FILES_TrueFileName ($sgn, $manifestarray["TARGET"]);
+        $doctype = FILES_FileType ($sgn, $manifestarray["TARGET"]);
+        if ($ext!=$doctype)
+          N_LOG("mailimport","Could not import file " . $path . "/" . $file . ", extensions dont match.");
+        else {
+          N_CopyFile ("html::/".$sgn."/preview/objects/".$manifestarray["TARGET"]."/".$object["filename"], $path . "/" . $file);
+          IMS_SignalObject ($sgn, $manifestarray["TARGET"], $user, getenv("HTTP_HOST"));
+          N_LOG("mailimport","Imported file " . $path . "/" . $file);
+        }
+      
+      } else {
+        // make document
+        $newfilename = IMS_NiceFilename($manifestarray["NAME"].".".$manifestarray["TYPE"]); //To fix problem with to long filename in NTFS
+      
+        $docid = IMS_NewObject ($sgn, "document");
+        N_LOG("mailimport","Importing: file = " . $path . "/" . $file . ", docid = ".$docid . 
+                           ", targetdir = " . $manifestarray["TARGETDIR"],print_r($manifestarray,true));
+        $obj = &IMS_AccessObject ($sgn , $docid); 
+        $obj["allocto"] = $user;
+        $obj["directory"] = $manifestarray["TARGETDIR"];
+        if($manifestarray["TARGETTYPE"]=="folder")
+          $obj["directory"] = $manifestarray["TARGET"];
+        $obj["shorttitle"] = N_UTF2HTML($manifestarray["NAME"]);
+        $obj["longtitle"] = N_UTF2HTML($manifestarray["NAME"]);
+        if($manifestarray["TYPE"]=='msg')
+          $obj["workflow"] = "direct";
+        else
+          $obj["workflow"] = "directcopy";
+        $obj["stage"] = 1;
+        $obj["filename"] = $newfilename;
+        $obj["executable"] = "auto";
+
+        //Handig voor debuggen
+        //$obj["dynmeta"]["manifest"] = "manifest";
+        //$obj["meta_manifest"] = print_r($manifestarray,true);
+
+        N_CopyFile ("html::/".$sgn."/preview/objects/".$docid ."/".$newfilename, $path . "/" . $file);
+        IMS_ArchiveObject ($sgn , $docid, $user, true);
+        MB_Flush();
+        // index
+        SEARCH_AddPreviewDocumentToDMSIndex ($sgn, $docid);
+
+        // publiceren
+        global $REMOTE_ADDR, $REMOTE_HOST, $SERVER_ADDR;
+
+        if($manifestarray["DATERECEIVEDINV"])
+          $time = strtotime($manifestarray["DATERECEIVEDINV"]);
+        else
+          $time = strtotime($manifestarray["DATERECEIVED"]);
+
+        $guid = N_GUID();
+        $obj["history"][$guid]["type"] = "forcedpublish";
+        $obj["history"][$guid]["when"] = $time;
+        $obj["history"][$guid]["author"] = $user;
+        $obj["history"][$guid]["server"] = N_CurrentServer ();
+        $obj["history"][$guid]["http_host"] = getenv("HTTP_HOST");
+        $obj["history"][$guid]["remote_addr"] = $REMOTE_ADDR;
+        $obj["history"][$guid]["server_addr"] = $SERVER_ADDR;
+
+        $workflow = SHIELD_AccessWorkflow ($sgn, $obj["workflow"]);
+        $obj["stage"] = $workflow["stages"];
+        IMS_PublishObject ($sgn, "", $docid); 
+        EVENTS_WorkflowStageChanged($oldstage, $obj["stage"], $obj, $docid); 
+
+        // Historie vermangelen
+        // beetje knoeien met history...
+
+        n_log("mailimport","manglehistoryofoutlookaddin: ".$manglehistory);
+
+        if(isset($manifestarray["DATERECEIVEDINV"]) && $manglehistory)
+        {
+              $timestamp = strtotime($manifestarray["DATERECEIVEDINV"]);
+                foreach ($obj["history"] as $guid => $his)
+                {
+                   if ($his["type"] == "new")
+                   {
+                      $obj["history"][$guid]["when"] = $timestamp;
+                   }
+                   else
+                   {
+                     $obj["history"][$guid]["author"] = $user;
+                     $obj["history"][$guid]["when"] = $timestamp + 1;
+                   }
+                }
+        }
+      }
+
+      // delete original file and manifest
+      N_DeleteFile ($path . "/" . $file);
+      $f = pathinfo($file);
+      $realbasename = basename($f["basename"], $f["extension"]);
+      N_DeleteFile ($path . "/" . $realbasename . "manifest");
+
+      OUTLOOK_PulseFlag($user);
+    }
+  
+    OUTLOOK_RemoveFlag($user);
+
+    // Keep processing until there are no more files (including files that were uploaded during the processing).
+    $todo = GATE_ClipboardDetermineTodo($sgn, $user);
+  }  
+
+  N_Log("mailimport", "GATE_ProcessClipboard end");
+  
+  return;
+}
+
+function GATE_ClipboardDetermineTodo($sgn, $user) {
+  // Determine which files need to be imported.
+  // Does a lot of checks (including parsing the manifest) to ensure that
+  // only files that *can* be successfully imported, *will* be imported.
+  // This is to prevent infinite loops when the clipboard directory is also
+  // used by other files (e.g. messages that should be manually imported)
+
+  $path = "html::/" . $sgn . "/clip/" . $user;
+  $files = N_Files($path); // Takes care of eliminating directories etc.
+  $todo = array();
+N_Log("mailimport","GATE_ClipboardDetermineTodo start");
+  foreach($files as $file) {
+N_Log("mailimport","GATE_ClipboardDetermineTodo $file");
+    $f = pathinfo($file);
+    // Do not process manifest files 
+    if ($f["extension"] != "manifest") { 
+      $realbasename = basename($f["basename"], $f["extension"]);
+      // Only process files that have a matching manifest
+      if ($files[$realbasename . "manifest"]) {
+        // Parse manifest file (only process files with a valid targetdir
+        $manifest = N_ReadFile($path . "/" . $realbasename . "manifest");
+        $manifest = str_replace ("SENDER".chr(13).chr(10)."TO", "SENDER".chr(13).chr(10)."Onbekend".chr(13).chr(10)."TO", $manifest);
+        $manifesttemparray = explode("\n", $manifest);
+        $manifestarray = array();
+
+        for($i=0;$i<=(count($manifesttemparray )/2)-1; $i++) {
+          $subjectline = trim($manifesttemparray[$i*2]);
+          $valueline = trim($manifesttemparray[($i*2)+1]);
+          if(!$valueline) $valueline = "empty";
+          $manifestarray[$subjectline] = $valueline;
+        }
+        $manifestarray["TARGETDIR"] = str_replace("http://","",$manifestarray["TARGETDIR"]);
+
+        if($manifestarray["TARGETDIR"] != "empty" && $manifestarray["TARGETDIR"] != "") {
+          if (CASE_FolderExists($sgn,$manifestarray["TARGETDIR"])) {
+            $todo[$file] = $manifestarray;
+          } else {
+            N_Log("mailimport", "WARNING: Can not import " . $path . "/" . $basename . 
+                                " to non-existing directory" . $manifestarray["TARGETDIR"]);
+          }
+        }
+        else if($manifestarray["TARGETTYPE"] != "" && $manifestarray["TARGET"] != "")
+        {
+          if ($manifestarray["TARGETTYPE"]== "folder")
+          {
+            if (CASE_FolderExists($sgn,$manifestarray["TARGET"])) { //zet het bestand erbij
+              $todo[$file] = $manifestarray;
+            } else {
+              N_Log("mailimport", "WARNING: Can not import " . $path . "/" . $basename . " to non-existing directory" . $manifestarray["TARGET"]);
+            }
+          }
+          else if ($manifestarray["TARGETTYPE"]== "file")
+          {
+            $o = MB_Load("ims_".$sgn."_objects",$manifestarray["TARGET"]);
+            if ($o["preview"]=="yes" || $o["published"]=="yes") { //als het te overschrijven document niet verwijderd is
+              $todo[$file] = $manifestarray;
+            } else {
+              N_Log("mailimport", "WARNING: Can not import " . $path . "/" . $basename . " to non-existing or deleded file " . $manifestarray["TARGET"]);
+            }
+          }
+        }
+      } else {
+        N_Log("mailimport", "WARNING: File found without (valid) manifest: " . $path . "/" . $file);
+      }
+    }
+  }
+N_Log("mailimport","GATE_ClipboardDetermineTodo end");
+  return $todo;
+}
+
+} // if (!function_exists ("GATE_ProcessClipboard"))";}

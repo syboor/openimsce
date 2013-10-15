@@ -1,0 +1,36 @@
+a:2:{s:4:"name";s:34:"Security Single Signon (voorbeeld)";s:4:"code";s:1203:"// code to enable single signon. This code will be executed before OpenIMS
+// tries to show the http login dialog
+//
+// Beware: this code will always be executed, even if it should not be necessary to login
+// (eg a public website). Your code should check if login is necassary. You could check the url for openims.php
+// for example. 
+if (!function_exists ("SHIELD_TestSingleSignOn_Extra")) {
+  function SHIELD_TestSingleSignOn_Extra() {
+// useful functions:
+// set user:
+//    SHIELD_SimulateUser("some_user");
+// display "Unauthorized":
+//    SHIELD_Unauthorized ();
+  }
+}
+
+if (!function_exists ("SHIELD_SingleSignOnForceLogon_Extra")) {
+  function SHIELD_SingleSignOnForceLogon_Extra($supergroupname) {
+//    header("WWW-Authenticate: Basic realm=\"$supergroupname\"");
+//    header("HTTP/1.0 401 Unauthorized");
+//    N_Exit();
+
+//    global $myconfig;
+//    if ($myconfig["htmlcompression"]!="yes") {
+//      ob_end_clean();
+//    }
+
+//    global $myconfig;
+//    if ($myconfig[IMS_Supergroupname()]["custom"]["401"] != "") {
+//      die ($myconfig[IMS_Supergroupname()]["custom"]["401"]);
+//    } else {
+//      die ('HTTP/1.0 401 Unauthorized');
+//    }
+  }
+}
+";}

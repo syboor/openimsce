@@ -1,0 +1,4 @@
+a:2:{s:4:"name";s:21:"NICEURL_AutoURL_EXTRA";s:4:"code";s:104:"function NICEURL_AutoURL_EXTRA ($sgn, $object_id, $result)
+{
+  return $result; // or something else
+}";}

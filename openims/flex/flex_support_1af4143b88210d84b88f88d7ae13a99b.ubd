@@ -1,0 +1,61 @@
+a:2:{s:4:"name";s:19:"HTML filter (turbo)";s:4:"code";s:2117:"if (!function_exists ("IMS_HtmlFilter")) { // prevent multiple filter definitions
+
+function IMS_HtmlFilter ($content)
+{
+  $content = IMS_TurboHTML ($content);
+  return $content;
+}
+
+function IMS_TurboHTML ($page) 
+{
+  $key = DFC_Key ("IMS_TurboHTML v3", $page);
+  if (DFC_Exists ($key)) return DFC_Read ($key);
+  if (preg_match_all ( '#"(/ufc/rapid2/[^/]*(/[^"]*.(gif|jpg|png)))"#i', $page, &$matches)) {
+    foreach ($matches[2] as $n => $file) {
+      $f = str_replace ("/./", "/", $file);
+      if (file_exists (N_CleanPath ("html::".$f))) {
+        $md5 = N_FileMD5 (N_CleanPath ("html::".$f));
+        if ($md5 != "d41d8cd98f00b204e9800998ecf8427e") {
+          $files[$md5] = $f;
+        }
+      }
+    }
+    foreach ($matches[2] as $n => $file) {
+      $url = $matches[1][$n];
+      $f = str_replace ("/./", "/", $file);
+      if (file_exists (N_CleanPath ("html::".$f))) {
+        $md5 = N_FileMD5 (N_CleanPath ("html::".$f));
+        if ($md5 != "d41d8cd98f00b204e9800998ecf8427e") {
+          $page = str_replace ($url, $files[$md5], $page);
+        } else {
+          $page = str_replace ($url, $f, $page);
+        }
+      }
+    }
+  }
+  if (preg_match_all ( '#"/ufc/rapid(/[^"]*.(gif|jpg|png))"#i', $page, &$matches)) {
+    foreach ($matches[1] as $dummy => $file) {
+      $f = str_replace ("/./", "/", $file);
+      if (file_exists (N_CleanPath ("html::".$f))) {
+        $md5 = N_FileMD5 (N_CleanPath ("html::".$f));
+        if ($md5 != "d41d8cd98f00b204e9800998ecf8427e") {
+          $files[$md5] = $f;
+        }
+      }
+    }
+    foreach ($matches[1] as $dummy => $file) {
+      $f = str_replace ("/./", "/", $file);
+      if (file_exists (N_CleanPath ("html::".$f))) {
+        $md5 = N_FileMD5 (N_CleanPath ("html::".$f));
+        if ($md5 != "d41d8cd98f00b204e9800998ecf8427e") {
+          $page = str_replace ("/ufc/rapid".$file, $files[$md5], $page);
+        } else {
+          $page = str_replace ("/ufc/rapid".$file, $f, $page);
+        }
+      }
+    }
+  }
+  return DFC_Write ($key, $page);
+}
+
+} // if (!function_exists ("IMS_HtmlFilter"))";}

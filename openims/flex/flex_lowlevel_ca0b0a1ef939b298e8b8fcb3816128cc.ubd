@@ -1,0 +1,21 @@
+a:2:{s:4:"name";s:18:"IMS_Doc2Text_Extra";s:4:"code";s:838:"if (!function_exists('IMS_Doc2Text_Extra')) {
+
+  /* Modify and/or supplement the plain text that will be used in the search engine,
+   * and (for certain file types) in the history compare function.
+   * $docpath = path to file
+   * $type = file extension (pdf, txt etc.)
+   * $text = plain text
+   *
+   * If you want, you can overrule the default conversion by overwriting $text
+   * Note: If you need to *disable* the default conversion, you can do:
+   * $myconfig["pdftotext"] = "/bin/true";  // Linux
+   * $myconfig["pdftotext"] = "REM";        // Windows
+   */
+  function IMS_Doc2Text_Extra($docpath, $type, $text) {
+    // if ($type == "pdf") {
+    //   uuse("search");
+    //   $text = SEARCH_Pdf2Text(N_ReadFile($docpath)) . $text; // Do not throw away the $text from pdftotext
+    // }
+    return $text;
+  }
+}";}
