@@ -1,5 +1,5 @@
 These installation instructions are for OpenIMS CE (Community Edition) only. 
-Additional and different requirements apply to OpenIMS Enterprise Edition!
+Additional and different requirements apply to OpenIMS Enterprise Edition.
 
 If you have any questions or need help please visit our forum at
 http://www.openims.com/phpbb/ so we can help you.
